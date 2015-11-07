@@ -51,7 +51,7 @@
             <security-realm name="UndertowRealm">
                 <server-identities>
                     <ssl>
-                        <keystore path="keycloak.jks" relative-to="jboss.server.config.dir" keystore-password="is-a-self-signed-localhost-cert" />
+                        <keystore path="/etc/secret-volume/keycloak.jks" keystore-password="is-a-self-signed-localhost-cert" />
                     </ssl>
                 </server-identities>
             </security-realm>
