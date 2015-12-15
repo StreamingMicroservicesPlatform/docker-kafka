@@ -1,1 +1,1 @@
-FROM cpuguy83/nfs-server@sha256:aaa5e740b10ab71263e9131e1f0d7397ede4d65b16ad2c4d2e9880462ebf006b
+FROM gcr.io/google_containers/volume-nfs:c534cc389ab1
