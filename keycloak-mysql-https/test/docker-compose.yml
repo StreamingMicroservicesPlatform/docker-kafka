@@ -1,0 +1,25 @@
+
+mysql:
+  image: mariadb:10.0
+  volumes:
+    - ./db:/var/lib/mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=testpwd
+    - MYSQL_DATABASE=keycloak
+    - MYSQL_USER=keycloak
+    - MYSQL_PASSWORD=keycloak
+  expose:
+    - 3306
+
+# you probably need to wait for mysql to start, see for example http://www.onegeek.com.au/articles/waiting-for-dependencies-in-docker-compose
+
+keycloak:
+  build: ../
+  links:
+    - mysql
+  environment:
+    - KEYCLOAK_LOGLEVEL=DEBUG
+    - MYSQL_DATABASE=keycloak
+    - MYSQL_USER=keycloak
+    - MYSQL_PASSWORD=keycloak
+    - MYSQL_ROOT_PASSWORD=testpwd
