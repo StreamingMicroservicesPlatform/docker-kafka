@@ -406,6 +406,8 @@
                     <filter-ref name="x-powered-by-header"/>
                 </host>
                 <https-listener name="https" socket-binding="https" security-realm="UndertowRealm"/>
+                <http-listener name="sslterminated" socket-binding="http-sslterminated"
+                  proxy-address-forwarding="true" redirect-socket="proxy-https"/>
             </server>
             <servlet-container name="default">
                 <jsp-config/>
@@ -440,6 +442,8 @@
         <socket-binding name="ajp" port="${jboss.ajp.port:8009}"/>
         <socket-binding name="http" port="${jboss.http.port:8080}"/>
         <socket-binding name="https" port="${jboss.https.port:8443}"/>
+        <socket-binding name="http-sslterminated" port="${jboss.http-sslterminated.port:8480}"/>
+        <socket-binding name="proxy-https" port="443"/>
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="mail-smtp">
