@@ -8,4 +8,4 @@ RUN npm install ungit -g
 
 EXPOSE 8448
 
-CMD ["/usr/bin/ungit", "--no-launchBrowser", "--forcedLaunchPath=/git/repositories"]
+ENTRYPOINT ["/usr/bin/ungit", "--no-launchBrowser"]
