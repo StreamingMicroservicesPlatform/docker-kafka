@@ -1,7 +1,10 @@
 
 FROM node:5
 
-RUN npm install -g js-yaml sinopia
+RUN npm install -g js-yaml \
+  && npm cache clean
+
+USER daemon
 
 # assumes that default is kept in config.yaml
 EXPOSE 4873
