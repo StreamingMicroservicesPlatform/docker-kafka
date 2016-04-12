@@ -10,6 +10,6 @@ USER daemon
 EXPOSE 4873
 
 # this is also just a recommendation, config file decides
-VOLUME /sinopia/storage
+VOLUME /sinopia
 
-ENTRYPOINT ["sinopia", "-c", "/etc/sinopia/config.yaml"]
+ENTRYPOINT ["sinopia", "-c", "/sinopia/config.yaml"]
