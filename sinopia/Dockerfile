@@ -1,7 +1,7 @@
 
-FROM node:5
+FROM node:4
 
-RUN npm install -g js-yaml \
+RUN npm install -g js-yaml sinopia \
   && npm cache clean
 
 USER daemon
