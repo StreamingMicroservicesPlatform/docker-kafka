@@ -1,0 +1,28 @@
+#!/bin/bash
+
+unzip-strip() (
+    local zip=$1
+    local dest=${2:-.}
+    local temp=$(mktemp -d) && unzip -d "$temp" "$zip" && mkdir -p "$dest" &&
+    shopt -s dotglob && local f=("$temp"/*) &&
+    if (( ${#f[@]} == 1 )) && [[ -d "${f[0]}" ]] ; then
+        mv "$temp"/*/* "$dest"
+    else
+        mv "$temp"/* "$dest"
+    fi && rmdir "$temp"/* "$temp"
+)
+
+curl -SLs "$download_zip_url" -o /tmp/node-run-dl.tmp
+
+if [ $download_strip_dirs = 1 ]; then
+  unzip-strip /tmp/node-run-dl.tmp /usr/src/app
+else
+  unzip /tmp/node-run-dl.tmp /usr/src/app
+fi
+rm /tmp/node-run-dl.tmp
+
+cd /usr/src/app
+
+npm install --production
+
+npm start
