@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# like tar's --strip-components but hardcoded 1
 unzip-strip() (
     local zip=$1
     local dest=${2:-.}
@@ -12,16 +13,25 @@ unzip-strip() (
     fi && rmdir "$temp"/* "$temp"
 )
 
+echo "Downloading $download_zip_url"
 curl -SLs "$download_zip_url" -o /tmp/node-run-dl.tmp
+
+echo "$download_zip_sha256 /tmp/node-run-dl.tmp" | sha256sum -c - || {
+  echo "Checksum mismatch, expected/actual:"
+  echo "Expected: $download_zip_sha256"
+  echo "Actual:   $(sha256sum - < /tmp/node-run-dl.tmp)"
+  exit 1
+}
 
 if [ $download_strip_dirs = 1 ]; then
   unzip-strip /tmp/node-run-dl.tmp /usr/src/app
+  cd /usr/src/app
 else
-  unzip /tmp/node-run-dl.tmp /usr/src/app
+  mkdir /usr/src/app
+  cd /usr/src/app
+  unzip /tmp/node-run-dl.tmp
 fi
 rm /tmp/node-run-dl.tmp
-
-cd /usr/src/app
 
 npm install --production
 
