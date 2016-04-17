@@ -13,25 +13,34 @@ unzip-strip() (
     fi && rmdir "$temp"/* "$temp"
 )
 
-echo "Downloading $download_zip_url"
-curl -SLs "$download_zip_url" -o /tmp/node-run-dl.tmp
+download-and-extract() {
+  echo "# Downloading $download_zip_url"
+  curl -SLs "$download_zip_url" -o /tmp/node-run-dl.tmp
 
-echo "$download_zip_sha256 /tmp/node-run-dl.tmp" | sha256sum -c - || {
-  echo "Checksum mismatch, expected/actual:"
-  echo "Expected: $download_zip_sha256"
-  echo "Actual:   $(sha256sum - < /tmp/node-run-dl.tmp)"
-  exit 1
+  echo "$download_zip_sha256 /tmp/node-run-dl.tmp" | sha256sum -c - || {
+    echo "Aborting due to checksum mismatch"
+    echo "Expected: $download_zip_sha256"
+    echo "Actual:   $(sha256sum - < /tmp/node-run-dl.tmp)"
+    exit 1
+  }
+
+  if [ $download_strip_dirs = 1 ]; then
+    unzip-strip /tmp/node-run-dl.tmp /usr/src/app
+    cd /usr/src/app
+  else
+    mkdir /usr/src/app
+    cd /usr/src/app
+    unzip /tmp/node-run-dl.tmp
+  fi
+  rm /tmp/node-run-dl.tmp
 }
 
-if [ $download_strip_dirs = 1 ]; then
-  unzip-strip /tmp/node-run-dl.tmp /usr/src/app
+if [ -d /usr/src/app ]; then
+  echo "# Looks like app is already installed"
   cd /usr/src/app
 else
-  mkdir /usr/src/app
-  cd /usr/src/app
-  unzip /tmp/node-run-dl.tmp
+  download-and-extract
 fi
-rm /tmp/node-run-dl.tmp
 
 npm install --production
 
