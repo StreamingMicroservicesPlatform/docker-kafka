@@ -42,6 +42,11 @@ else
   download-and-extract
 fi
 
+if [ -d /usr/src/libs/node_modules ] && [ ! -d /usr/src/app/node_modules ]; then
+  echo "# Looks like there are common libs"
+  ln -sv /usr/src/libs/node_modules /usr/src/app/node_modules
+fi
+
 npm install --production
 
 npm start
