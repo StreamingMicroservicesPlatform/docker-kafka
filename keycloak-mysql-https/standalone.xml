@@ -118,7 +118,10 @@
             <formatter name="COLOR-PATTERN">
                 <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
             </formatter>
-        </subsystem>
+        <log:logger xmlns:log="urn:jboss:domain:logging:3.0" xmlns="" category="org.keycloak">
+            <log:level name="${env.KEYCLOAK_LOGLEVEL:INFO}"/>
+         </log:logger>
+      </subsystem>
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
