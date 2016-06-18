@@ -1,5 +1,5 @@
 
-FROM node:4
+FROM node:6
 
 RUN npm install -g js-yaml sinopia \
   && npm cache clean
