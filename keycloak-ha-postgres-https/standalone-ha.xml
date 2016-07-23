@@ -45,6 +45,13 @@
                     <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
                 </authorization>
             </security-realm>
+            <security-realm name="UndertowRealm">
+                <server-identities>
+                    <ssl>
+                        <keystore path="/etc/secret-volume/keycloak.jks" keystore-password="is-a-self-signed-localhost-cert" />
+                    </ssl>
+                </server-identities>
+            </security-realm>
         </security-realms>
         <audit-log>
             <formatters>
@@ -437,6 +444,9 @@
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
                 </host>
+                <https-listener name="https" socket-binding="https" security-realm="UndertowRealm"/>
+                <http-listener name="sslterminated" socket-binding="http-sslterminated"
+                  proxy-address-forwarding="true" redirect-socket="proxy-https"/>
             </server>
             <servlet-container name="default">
                 <jsp-config/>
@@ -474,6 +484,8 @@
         <socket-binding name="ajp" port="${jboss.ajp.port:8009}"/>
         <socket-binding name="http" port="${jboss.http.port:8080}"/>
         <socket-binding name="https" port="${jboss.https.port:8443}"/>
+        <socket-binding name="http-sslterminated" port="${jboss.http-sslterminated.port:8480}"/>
+        <socket-binding name="proxy-https" port="443"/>
         <socket-binding name="jgroups-mping" interface="private" port="0"
                       multicast-address="${jboss.default.multicast.address:230.0.0.4}"
                       multicast-port="45700"/>
