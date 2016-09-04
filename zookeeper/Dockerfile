@@ -1,7 +1,7 @@
 
 FROM java:openjdk-8-jre
 
-ENV zookeeper_version=3.4.8
+ENV zookeeper_version=3.4.9
 
 RUN curl -SLs http://apache.mirrors.pair.com/zookeeper/zookeeper-$zookeeper_version/zookeeper-$zookeeper_version.tar.gz | tar -xzf - -C /opt \
   && mv /opt/zookeeper-$zookeeper_version /opt/zookeeper \
