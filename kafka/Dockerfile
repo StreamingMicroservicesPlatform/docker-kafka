@@ -1,7 +1,7 @@
 
 FROM java:openjdk-8-jre
 
-ENV kafka_version=0.10.0.1
+ENV kafka_version=0.10.1.0
 ENV scala_version=2.11.8
 ENV kafka_bin_version=2.11-$kafka_version
 
