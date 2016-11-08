@@ -1,5 +1,9 @@
-FROM alpine
+FROM debian:jessie
 
-RUN apk add --update --no-cache curl
+RUN apt-get update \
+  && apt-get install -y \
+    curl \
+    dnsutils \
+    nmap
 
-CMD curl
+CMD ["curl"]
