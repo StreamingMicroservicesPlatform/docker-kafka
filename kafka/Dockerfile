@@ -1,14 +1,13 @@
-FROM openjdk:8-jre
+FROM openjdk:8-jre-alpine
 
-ENV kafka_version=0.10.1.1
-ENV scala_version=2.11.8
-ENV kafka_bin_version=2.11-$kafka_version
+ARG kafka_version=0.10.2.0
+ENV kafka_bin_version=2.12-$kafka_version
 
-RUN curl -SLs "http://www.scala-lang.org/files/archive/scala-$scala_version.deb" -o scala.deb \
-	&& dpkg -i scala.deb \
-	&& rm scala.deb \
-	&& curl -SLs "http://www-eu.apache.org/dist/kafka/$kafka_version/kafka_$kafka_bin_version.tgz" | tar -xzf - -C /opt \
-	&& mv /opt/kafka_$kafka_bin_version /opt/kafka
+RUN apk add --no-cache --update-cache --virtual build-dependencies curl ca-certificates \
+  && mkdir -p /opt/kafka \
+  && curl -SLs "https://www-eu.apache.org/dist/kafka/$kafka_version/kafka_$kafka_bin_version.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka \
+  && apk del build-dependencies \
+  && rm -rf /var/cache/apk/*
 
 WORKDIR /opt/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
