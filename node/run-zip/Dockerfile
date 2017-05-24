@@ -1,4 +1,4 @@
-FROM node:6
+FROM node:7.10@sha256:4b28451edc9d0f45152f38780a7eea2461fa54fb7df1ae47c9830592d90cc8bb
 
 RUN apt-get update \
   && apt-get install -y curl unzip \
