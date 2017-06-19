@@ -1,6 +1,6 @@
 FROM openjdk:8-jre-alpine
 
-ARG kafka_version=0.10.2.0
+ARG kafka_version=0.11.0.0-rc1
 ENV kafka_bin_version=2.12-$kafka_version
 
 RUN apk add --no-cache --update-cache --virtual build-dependencies curl ca-certificates \
