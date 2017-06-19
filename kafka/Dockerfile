@@ -1,11 +1,13 @@
-FROM openjdk:8-jre-alpine
+FROM gradle:3.5-jdk8-alpine
 
 ARG kafka_version=0.11.0.0-rc1
-ENV kafka_bin_version=2.12-$kafka_version
 
 RUN apk add --no-cache --update-cache --virtual build-dependencies curl ca-certificates \
   && mkdir -p /opt/kafka \
-  && curl -SLs "https://www-eu.apache.org/dist/kafka/$kafka_version/kafka_$kafka_bin_version.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka \
+  && curl -SLs "https://github.com/apache/kafka/archive/0.11.0.0-rc1.tar.gz" | tar -xzf - --strip-components=1 -C /src/kafka \
+  && cd /src/kafka \
+  && gradle \
+  && gradlew jar \
   && apk del build-dependencies \
   && rm -rf /var/cache/apk/*
 
