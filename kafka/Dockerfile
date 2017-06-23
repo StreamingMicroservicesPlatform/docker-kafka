@@ -2,14 +2,12 @@ FROM gradle:3.5-jdk8-alpine
 
 ARG kafka_version=0.11.0.0-rc1
 
-RUN apk add --no-cache --update-cache --virtual build-dependencies curl ca-certificates \
-  && mkdir -p /opt/kafka \
+RUN mkdir -p /opt/kafka \
   && curl -SLs "https://github.com/apache/kafka/archive/0.11.0.0-rc1.tar.gz" | tar -xzf - --strip-components=1 -C /src/kafka \
   && cd /src/kafka \
   && gradle \
   && gradlew jar \
-  && apk del build-dependencies \
-  && rm -rf /var/cache/apk/*
+  && ls -la
 
 WORKDIR /opt/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
