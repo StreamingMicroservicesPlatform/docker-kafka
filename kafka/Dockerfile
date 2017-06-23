@@ -12,15 +12,15 @@ RUN set -e; cd /usr/local; \
 
 RUN set -e; cd /usr/local; \
   export PATH=$PATH:/usr/local/gradle-4.0/bin; \
-  mkdir build-kafka; \
-  curl -SLs "https://github.com/apache/kafka/archive/$KAFKA_VERSION.tar.gz" | tar -xzf - --strip-components=1 -C ./build-kafka; \
-  cd build-kafka; \
+  mkdir kafka; \
+  curl -SLs "https://github.com/apache/kafka/archive/$KAFKA_VERSION.tar.gz" | tar -xzf - --strip-components=1 -C ./kafka; \
+  cd kafka; \
   sed -i "s/scalaVersion=.*/scalaVersion=$SCALA_VERSION/" gradle.properties; \
   gradle; \
-  #./gradlew test; \
+  ./gradlew test; \
   ./gradlew jar
 
-RUN mkdir -p /usr/local/kafka/config && touch /usr/local/kafka/config/server.properties
+RUN apk add --no-cache bash
 
 WORKDIR /usr/local/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
