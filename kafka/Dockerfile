@@ -17,7 +17,7 @@ RUN set -e; cd /usr/local; \
   cd kafka; \
   sed -i "s/scalaVersion=.*/scalaVersion=$SCALA_VERSION/" gradle.properties; \
   gradle; \
-  ./gradlew test; \
+  #./gradlew test; \
   ./gradlew jar
 
 RUN apk add --no-cache bash
