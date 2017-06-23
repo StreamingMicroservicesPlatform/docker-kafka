@@ -1,15 +1,28 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:8u131-jre-alpine
 
-ARG kafka_version=0.11.0.0-rc1
-ENV kafka_bin_version=2.12-$kafka_version
+ENV KAFKA_VERSION=0.11.0.0-rc2 SCALA_VERSION=2.12.2
 
-RUN apk add --no-cache --update-cache --virtual build-dependencies curl ca-certificates \
-  && mkdir -p /opt/kafka \
-  && curl -SLs "https://www-eu.apache.org/dist/kafka/$kafka_version/kafka_$kafka_bin_version.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka \
-  && apk del build-dependencies \
-  && rm -rf /var/cache/apk/*
+RUN set -e; cd /usr/local; \
+  GRADLE_VERSION=4.0 PATH=$PATH:$(pwd)/gradle-$GRADLE_VERSION/bin; \
+  apk add --no-cache curl openjdk8="$JAVA_ALPINE_VERSION"; \
+  curl -SLs -o gradle-$GRADLE_VERSION-bin.zip https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip; \
+  unzip gradle-$GRADLE_VERSION-bin.zip; \
+  rm gradle-$GRADLE_VERSION-bin.zip; \
+  gradle -v;
 
-WORKDIR /opt/kafka
+RUN set -e; cd /usr/local; \
+  export PATH=$PATH:/usr/local/gradle-4.0/bin; \
+  mkdir kafka; \
+  curl -SLs "https://github.com/apache/kafka/archive/$KAFKA_VERSION.tar.gz" | tar -xzf - --strip-components=1 -C ./kafka; \
+  cd kafka; \
+  sed -i "s/scalaVersion=.*/scalaVersion=$SCALA_VERSION/" gradle.properties; \
+  gradle; \
+  ./gradlew test; \
+  ./gradlew jar
+
+RUN apk add --no-cache bash
+
+WORKDIR /usr/local/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
 
 RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/' config/server.properties
