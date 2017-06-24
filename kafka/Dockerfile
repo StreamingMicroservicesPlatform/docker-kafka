@@ -28,5 +28,8 @@ ENTRYPOINT ["bin/kafka-server-start.sh"]
 RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/' config/server.properties
 CMD ["config/server.properties"]
 
-# Disable all logging to file, which happens to be all lines with ".appender." in them
-RUN sed 's/^\(.*\)\.appender\./#\1.appender./' config/log4j.properties
+RUN set -e; \
+  sed -i 's/^\(.*\)\.DatePattern=/#\1.DatePattern=/' config/log4j.properties; \
+  sed -i 's/^\(.*\)\.File=/#\1.File=/' config/log4j.properties; \
+  \
+  sed -i 's/^\(.*\)=org.apache.log4j.DailyRollingFileAppender/\1=org.apache.log4j.ConsoleAppender\n#\1=org.apache.log4j.DailyRollingFileAppender/' config/log4j.properties
