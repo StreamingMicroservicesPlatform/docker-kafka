@@ -33,3 +33,14 @@ RUN set -e; \
   sed -i 's/^\(.*\)\.File=/#\1.File=/' config/log4j.properties; \
   \
   sed -i 's/^\(.*\)=org.apache.log4j.DailyRollingFileAppender/\1=org.apache.log4j.ConsoleAppender\n#\1=org.apache.log4j.DailyRollingFileAppender/' config/log4j.properties
+
+# Experimental, to be introduced in build
+RUN set -e; cd /usr/local; \
+  mkdir -p kafka-bin/core/build; \
+  mv kafka/core/build/libs             kafka-bin/core/build/; \
+  mv kafka/core/build/dependant-libs-* kafka-bin/core/build/; \
+  mkdir -p kafka-bin/clients/build/; \
+  mv kafka/clients/build/libs kafka-bin/clients/build/; \
+  mv kafka/config kafka-bin/; \
+  mv kafka/bin    kafka-bin/; \
+  mv kafka kafka-build; mv kafka-bin kafka
