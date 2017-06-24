@@ -27,3 +27,6 @@ ENTRYPOINT ["bin/kafka-server-start.sh"]
 
 RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/' config/server.properties
 CMD ["config/server.properties"]
+
+# Disable all logging to file, which happens to be all lines with ".appender." in them
+RUN sed 's/^\(.*\)\.appender\./#\1.appender./' config/log4j.properties
