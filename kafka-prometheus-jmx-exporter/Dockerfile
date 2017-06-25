@@ -1,8 +1,11 @@
 FROM openjdk:8u131-jre-alpine
 
 ENV EXPORTER_VERSION=8ded2c5e112f8c458e60398c528799ca763c78ac
+ENV EXPORTER_REPO=github.com/prometheus/jmx_exporter
 
-RUN set -e; cd /usr/local; \
+WORKDIR /usr/local/
+
+RUN set -e; \
   MAVEN_VERSION=3.5.0 PATH=$PATH:$(pwd)/maven/bin; \
   apk add  --no-cache --virtual .build-deps \
     curl \
@@ -12,14 +15,18 @@ RUN set -e; cd /usr/local; \
   mvn --version; \
   \
   mkdir ./jmx_exporter; \
-  curl -SLs https://github.com/prometheus/jmx_exporter/archive/$EXPORTER_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./jmx_exporter; \
+  curl -SLs https://$EXPORTER_REPO/archive/$EXPORTER_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./jmx_exporter; \
   cd ./jmx_exporter; \
   mvn package; \
+  find jmx_prometheus_httpserver/ -name *-jar-with-dependencies.jar -exec mv -v '{}' ../jmx_prometheus_httpserver.jar \;; \
+  mv example_configs ../; \
+  cd ..; \
   \
-  rm /root/.m2 -Rf; \
+  rm -Rf ./jmx_exporter ./maven /root/.m2; \
   apk del .build-deps;
 
 RUN apk add --no-cache bash
 
-WORKDIR /usr/local/jmx_exporter
-ENTRYPOINT ["run_sample_httpserver.sh"]
+ENTRYPOINT ["java", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false", "-Dcom.sun.management.jmxremote.port=5555", "-jar", "jmx_prometheus_httpserver.jar"]
+# https://github.com/prometheus/jmx_exporter/tree/master/example_configs
+CMD ["5556", "example_configs/kafka-0-8-2.yml"]
