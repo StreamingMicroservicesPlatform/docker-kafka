@@ -27,6 +27,14 @@ RUN set -e; \
 
 RUN apk add --no-cache bash
 
-ENTRYPOINT ["java", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false", "-Dcom.sun.management.jmxremote.port=5555", "-jar", "jmx_prometheus_httpserver.jar"]
-# https://github.com/prometheus/jmx_exporter/tree/master/example_configs
-CMD ["5556", "example_configs/kafka-0-8-2.yml"]
+# Use a sample config that also has a Grafana dashboard https://blog.rntech.co.uk/2016/10/20/monitoring-apache-kafka-with-prometheus/
+# Mount your own yml, for example using ConfigMap, or set Kafka JMX_PORT=5555
+RUN apk add  --no-cache --virtual .build-deps curl; \
+  curl -SLs -o example_configs/kafka-prometheus-monitoring.yml \
+    https://raw.githubusercontent.com/rama-nallamilli/kafka-prometheus-monitoring/c4ee0e6b03386375b9b9e66b3fcbf4a704bec8f5/prometheus-jmx-exporter/confd/templates/kafka.yml.tmpl; \
+  sed -i 's|{{ getv "/jmx/host" }}|127.0.0.1|' example_configs/kafka-prometheus-monitoring.yml; \
+  sed -i 's|{{ getv "/jmx/port" }}|5555|'      example_configs/kafka-prometheus-monitoring.yml; \
+  apk del .build-deps;
+
+ENTRYPOINT ["java", "-jar", "jmx_prometheus_httpserver.jar"]
+CMD ["5556", "example_configs/kafka-prometheus-monitoring.yml"]
