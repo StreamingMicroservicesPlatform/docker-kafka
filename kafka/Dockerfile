@@ -1,6 +1,6 @@
 FROM openjdk:8u131-jre-alpine
 
-ENV KAFKA_VERSION=0.11.0.0-rc2 SCALA_VERSION=2.12.2
+ENV KAFKA_VERSION=0.11.0.0 SCALA_VERSION=2.12.2
 
 RUN set -e; cd /usr/local; \
   GRADLE_VERSION=4.0 PATH=$PATH:$(pwd)/gradle-$GRADLE_VERSION/bin; \
