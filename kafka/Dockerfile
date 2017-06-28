@@ -17,7 +17,8 @@ RUN set -e; cd /usr/local; \
   cd build; \
   sed -i "s/scalaVersion=.*/scalaVersion=$SCALA_VERSION/" gradle.properties; \
   gradle; \
-  #./gradlew test; \
+  ./gradlew unitTest; \
+  ./gradlew integrationTest; \
   ./gradlew jar; \
   gradle --stop; \
   cd ..; \
