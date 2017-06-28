@@ -45,7 +45,8 @@ RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/
 CMD ["config/server.properties"]
 
 RUN set -e; \
-  sed -i 's/^\(.*\)\.DatePattern=/#\1.DatePattern=/' config/log4j.properties; \
-  sed -i 's/^\(.*\)\.File=/#\1.File=/' config/log4j.properties; \
-  \
-  sed -i 's/^\(.*\)=org.apache.log4j.DailyRollingFileAppender/\1=org.apache.log4j.ConsoleAppender\n#\1=org.apache.log4j.DailyRollingFileAppender/' config/log4j.properties
+  mv config/log4j.properties config/log4j.properties.org; \
+  echo "log4j.rootLogger=INFO, stdout"                                     > config/log4j.properties; \
+  echo "log4j.appender.stdout=org.apache.log4j.ConsoleAppender"           >> config/log4j.properties; \
+  echo "log4j.appender.stdout.layout=org.apache.log4j.PatternLayout"      >> config/log4j.properties; \
+  echo "log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n" >> config/log4j.properties
