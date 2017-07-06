@@ -14,3 +14,5 @@ RUN buildDeps='curl ca-certificates'; \
   rm -rf /usr/local/kubernetes; \
   \
   apt-get purge -y --auto-remove $buildDeps
+
+ENTRYPOINT ["kubectl"]
