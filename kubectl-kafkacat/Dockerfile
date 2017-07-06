@@ -8,10 +8,11 @@ RUN buildDeps='curl ca-certificates'; \
   rm -rf /var/lib/apt/lists/*; \
   \
   mkdir /usr/local/kubernetes; \
-  curl -SLs "https://dl.k8s.io/v$KUBERNETES_VERSION/kubernetes-client-linux-amd64.tar.gz" | tar -xzf - --strip-components=1 -C /usr/local/kubernetes; \
+  curl -SLs "https://dl.k8s.io/v$KUBERNETES_VERSION/kubernetes-client-linux-amd64.tar.gz" -o /usr/local/kubernetes-client.tar.gz; \
+  tar -xvzf /usr/local/kubernetes-client.tar.gz --strip-components=1 -C /usr/local/kubernetes; \
+  rm /usr/local/kubernetes-client.tar.gz; \
   \
   mv /usr/local/kubernetes/client/bin/kubectl /usr/local/bin/; \
   rm -rf /usr/local/kubernetes; \
   \
-  rm -rf /usr/src/kafkacat/tmp-bootstrap; \
   apt-get purge -y --auto-remove $buildDeps
