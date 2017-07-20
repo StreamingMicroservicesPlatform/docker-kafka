@@ -45,3 +45,17 @@ services:
     command:
       - -exc
       - sleep 5; echo "Message from $${HOSTNAME} at $$(date)" | kafkacat -z snappy -b kafka-0:9092 -t test1 -P
+
+  test-consume-all:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    command:
+      - -b
+      - kafka-0:9092
+      - -t
+      - test1
+      - -C
+      - -o
+      - beginning
+      - -e
