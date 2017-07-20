@@ -16,10 +16,8 @@ services:
       # unlike Kubernetes StatefulSet, compose gives containers a random hostname (leading to redirects to a hex name)
       - --override
       -   advertised.listener=PLAINTEXT://kafka-0:9092
-      - --override
-      -   auto.create.topics.enable=false
 
-  test-topic-create-1:
+  test-topic-create:
     build: ../kafka
     labels:
       com.yolean.build-contract: ""
@@ -31,7 +29,7 @@ services:
       -   zookeeper:2181
       - --create
       - --topic
-      -   test1
+      -   test-topic-create
       - --partitions
       -   '1'
       - --replication-factor
@@ -59,3 +57,18 @@ services:
       - -o
       - beginning
       - -e
+
+  test-kafka-connect:
+    build: ../kafka
+    labels:
+      com.yolean.build-contract: ""
+    links:
+      - kafka-0
+    entrypoint: ./bin/connect-standalone.sh
+    command:
+      # TODO we need to configure bootstrap.servers=kafka-0:9092 here
+      - ./config/connect-standalone.properties
+      - ./config/connect-file-source.properties
+
+  test-kafka-connect-build:
+    build: ../kafka-connect-jmx
