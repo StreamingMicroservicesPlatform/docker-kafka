@@ -26,4 +26,5 @@ compose='docker-compose -f build-contracts/docker-compose.yml'
 $compose up -d zookeeper kafka-0
 $compose up test-topic-create-1
 $compose up test-snappy-compression
+$compose up test-consume-all
 ```
