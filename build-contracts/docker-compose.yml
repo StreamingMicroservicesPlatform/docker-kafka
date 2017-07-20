@@ -58,17 +58,17 @@ services:
       - beginning
       - -e
 
-  test-kafka-connect:
-    build: ../kafka
-    labels:
-      com.yolean.build-contract: ""
+  connect-file-find:
+    build: ../connect-file-glob
     links:
       - kafka-0
-    entrypoint: ./bin/connect-standalone.sh
+    # set up a development container
+    entrypoint: /bin/sh
     command:
-      # TODO we need to configure bootstrap.servers=kafka-0:9092 here
-      - ./config/connect-standalone.properties
-      - ./config/connect-file-source.properties
+      - -exc
+      - tail -f /dev/null
+    volumes:
+      - ../connect-files:/usr/src/connect-files
 
   test-kafka-connect-build:
     build: ../kafka-connect-jmx
