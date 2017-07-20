@@ -1,7 +1,7 @@
 FROM debian:stable-20170620
 
 ENV KAFKA_VERSION=0.11.0.0
-ENV kafka_bin_version=2.12-$KAFKA_VERSION
+ENV kafka_bin_version=2.11-$KAFKA_VERSION
 
 RUN set -ex; \
   runDeps='default-jre'; \
