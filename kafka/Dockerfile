@@ -1,13 +1,19 @@
-FROM openjdk:8-jre-alpine
+FROM debian:stable-20170620
 
-ARG kafka_version=0.10.2.0
-ENV kafka_bin_version=2.12-$kafka_version
+ENV KAFKA_VERSION=0.11.0.0
+ENV kafka_bin_version=2.12-$KAFKA_VERSION
 
-RUN apk add --no-cache --update-cache --virtual build-dependencies curl ca-certificates \
-  && mkdir -p /opt/kafka \
-  && curl -SLs "https://www-eu.apache.org/dist/kafka/$kafka_version/kafka_$kafka_bin_version.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka \
-  && apk del build-dependencies \
-  && rm -rf /var/cache/apk/*
+RUN set -ex; \
+  runDeps='default-jre'; \
+  buildDeps='curl ca-certificates'; \
+  apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
+  rm -rf /var/lib/apt/lists/*; \
+  \
+  mkdir -p /opt/kafka; \
+  curl -SLs "https://www-eu.apache.org/dist/kafka/$KAFKA_VERSION/kafka_$kafka_bin_version.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka; \
+  \
+  apt-get purge -y --auto-remove $buildDeps; \
+  rm /var/log/dpkg.log /var/log/apt/*.log
 
 WORKDIR /opt/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
