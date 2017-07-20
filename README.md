@@ -18,4 +18,11 @@ Rudimentary compliance with kubernetes-kafka is tested using a [build-contract](
 
 Build and test using: `docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/:/source solsson/build-contract test`
 
-To keep kafka running for local use, uncomment `ports` 9092 and run: `docker-compose -f build-contracts/docker-compose.yml`.
+To keep kafka running for local use, uncomment `ports` 9092 and run: `docker-compose -f build-contracts/docker-compose.yml up --force-recreate`.
+
+While timing issues remain, start services individually
+```bash
+compose='docker-compose -f build-contracts/docker-compose.yml'
+$compose up -d zookeeper kafka-0
+$compose up test-topic-create-1
+```
