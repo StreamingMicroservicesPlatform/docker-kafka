@@ -15,6 +15,6 @@ RUN set -ex; \
   rm -rf /usr/local/kubernetes; \
   \
   apt-get purge -y --auto-remove $buildDeps; \
-  rm /var/log/dpkg.log /var/log/alternatives.log /var/log/apt/*.log
+  rm /var/log/dpkg.log /var/log/apt/*.log
 
 ENTRYPOINT ["kubectl"]
