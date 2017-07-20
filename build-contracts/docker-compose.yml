@@ -9,6 +9,8 @@ services:
 
   kafka-0:
     build: ../kafka
+    links:
+      - zookeeper
     command:
       - config/server.properties
       - --override
@@ -58,17 +60,26 @@ services:
       - beginning
       - -e
 
-  connect-file-find:
-    build: ../connect-file-glob
+  connect-files:
+    build: ../connect-files
     links:
       - kafka-0
-    # set up a development container
-    entrypoint: /bin/sh
-    command:
-      - -exc
-      - tail -f /dev/null
+    # test with some real logs
     volumes:
-      - ../connect-files:/usr/src/connect-files
+      - /var/log:/logs
+
+  test-consume-files:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    command:
+      - -b
+      - kafka-0:9092
+      - -t
+      - files-000
+      - -C
+      - -o
+      - beginning
 
   test-kafka-connect-build:
     build: ../kafka-connect-jmx
