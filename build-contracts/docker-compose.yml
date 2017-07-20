@@ -1,0 +1,38 @@
+version: '2.0'
+services:
+
+  zookeeper:
+    build: ../kafka
+    entrypoint: ./bin/zookeeper-server-start.sh
+    command:
+      - config/zookeeper.properties
+
+  kafka-1:
+    build: ../kafka
+    command:
+      - config/server.properties
+      - --override
+      -   broker.id=1
+      # unlike Kubernetes StatefulSet, compose gives containers a reandom hostname (leading to redirects to a hex name)
+      - --override
+      -   advertised.listener=PLAINTEXT://kafka-1:9092
+
+  test-topic-create-1:
+    build: ../kafka
+    labels:
+      com.yolean.build-contract: ""
+    entrypoint: ./bin/kafka-topics.sh
+    command:
+      - --zookeeper
+      -   zookeeper:2181
+      - --create
+      - --topic test1
+
+  test-snappy-compression:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    entrypoint: /bin/sh
+    command:
+      - -exc
+      - sleep 5; echo "Message from $${HOSTNAME} at $$(date)" | kafkacat -z snappy -b kafka-1:9092 -t test1 -P
