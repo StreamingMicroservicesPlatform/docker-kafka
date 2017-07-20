@@ -1,7 +1,6 @@
 FROM debian:stable-20170620
 
-ENV KAFKA_VERSION=0.11.0.0 ZULU_OPENJDK_VERSION="8=8.21.0.1"
-ENV kafka_bin_version=2.11-$KAFKA_VERSION
+ENV KAFKA_VERSION=0.11.0.0 ZULU_OPENJDK_VERSION="8=8.21.0.1" KAFKA_BIN_SCALA_VERSION=2.11
 
 RUN set -ex; \
   runDeps=''; \
@@ -13,7 +12,7 @@ RUN set -ex; \
   apt-get update && apt-get install -y zulu-${ZULU_OPENJDK_VERSION} --no-install-recommends; \
   \
   mkdir -p /opt/kafka; \
-  curl -SLs "https://www-eu.apache.org/dist/kafka/$KAFKA_VERSION/kafka_$kafka_bin_version.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka; \
+  curl -SLs "https://www-eu.apache.org/dist/kafka/$KAFKA_VERSION/kafka_$KAFKA_BIN_SCALA_VERSION-$KAFKA_VERSION.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka; \
   \
   apt-get purge -y --auto-remove $buildDeps; \
   rm -rf /var/lib/apt/lists/*; \
