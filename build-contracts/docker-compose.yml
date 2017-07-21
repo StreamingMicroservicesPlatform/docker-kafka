@@ -115,5 +115,20 @@ services:
 
   connect-jmx:
     build: ../connect-jmx
+    labels:
+      com.yolean.build-target: ""
     links:
       - kafka-0
+
+  test-jmx:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    command:
+      - -b
+      - kafka-0:9092
+      - -t
+      - jmx-test
+      - -C
+      - -o
+      - beginning

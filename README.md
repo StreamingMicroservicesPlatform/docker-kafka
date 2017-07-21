@@ -20,14 +20,22 @@ Build and test using: `docker run -v /var/run/docker.sock:/var/run/docker.sock -
 
 To keep kafka running for local use, uncomment `ports` 9092 and run: `docker-compose -f build-contracts/docker-compose.yml up --force-recreate`.
 
-While timing issues remain, start services individually
+While timing issues remain, start services individually...
+
 ```bash
 compose='docker-compose -f build-contracts/docker-compose.yml'
 $compose up -d zookeeper kafka-0
+$compose logs zookeeper kafka-0
+# can we create topics using the image's provided script?
 $compose up test-topic-create-1
+# can a producer send messages using snappy (has issues before with a class missing in the image)
 $compose up test-snappy-compression
 $compose up test-consume-all
+# demo the prometheus exporter image
 $compose up prometheus-jmx-exporter test-metrics-export
+# demo the log/file aggregation image
 $compose up --build -d connect-files
 $compose up test-consume-files
+# demo the JMX->kafka image
+$compose up --build connect-jmx test-jmx
 ```
