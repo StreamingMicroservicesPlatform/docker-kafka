@@ -11,6 +11,10 @@ services:
     build: ../kafka
     links:
       - zookeeper
+    environment:
+      - JMX_PORT=5555
+    expose:
+      - '5555'
     command:
       - config/server.properties
       - --override
@@ -18,6 +22,34 @@ services:
       # unlike Kubernetes StatefulSet, compose gives containers a random hostname (leading to redirects to a hex name)
       - --override
       -   advertised.listener=PLAINTEXT://kafka-0:9092
+
+  prometheus-jmx-exporter:
+    #build: ../prometheus-jmx-exporter
+    image: solsson/kafka-prometheus-jmx-exporter
+    labels:
+      com.yolean.build-target: ""
+    links:
+      - kafka-0
+    # patch a config before start, as the image is designed for use with local JMX (same k8s pod)
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - >
+        sed -i 's|127.0.0.1|kafka-0|' example_configs/kafka-prometheus-monitoring.yml;
+        cat example_configs/kafka-prometheus-monitoring.yml;
+        java -jar jmx_prometheus_httpserver.jar
+        5556 example_configs/kafka-prometheus-monitoring.yml
+
+  test-metrics-export:
+    image: solsson/curl@sha256:8b0927b81d10043e70f3e05e33e36fb9b3b0cbfcbccdb9f04fd53f67a270b874
+    command:
+      - --fail-early
+      - --retry
+      -   '10'
+      - --retry-delay
+      -   '3'
+      - --retry-connrefused
+      - http://prometheus-jmx-exporter:5556/metrics
 
   test-topic-create:
     build: ../kafka
@@ -81,5 +113,7 @@ services:
       - -o
       - beginning
 
-  test-kafka-connect-build:
-    build: ../kafka-connect-jmx
+  connect-jmx:
+    build: ../connect-jmx
+    links:
+      - kafka-0

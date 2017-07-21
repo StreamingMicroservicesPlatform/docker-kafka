@@ -27,6 +27,7 @@ $compose up -d zookeeper kafka-0
 $compose up test-topic-create-1
 $compose up test-snappy-compression
 $compose up test-consume-all
-$compose up --build -d consume-files
+$compose up prometheus-jmx-exporter test-metrics-export
+$compose up --build -d connect-files
 $compose up test-consume-files
 ```
