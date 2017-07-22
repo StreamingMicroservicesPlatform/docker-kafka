@@ -1,20 +1,36 @@
-# dockerfiles
+# Kafka docker builds
 
-Nowadays we're using separate repositories for dockerization projects.
+Automated [Kafka](http://kafka.apache.org/) builds for https://hub.docker.com/r/solsson/kafka/
+and related `kafka-` images under https://hub.docker.com/u/solsson/.
+
+---
+
+This repo used to contain misc dockerfiles, but they've moved to separate repositories for dockerization projects.
+We've kept the repository name to avoid breaking the automated build of solsson/kafka in Docker Hub.
 
 For legacy Dockerfiles from this repo (if you navigated to here from a Docker Hub [solsson](https://hub.docker.com/u/solsson/) image),
 see https://github.com/solsson/dockerfiles/tree/misc-dockerfiles.
 
-# Kafka docker builds
+---
 
-This repository maintains automated [Kafka](http://kafka.apache.org/) builds for https://hub.docker.com/r/solsson/kafka/
-and related `kafka-` images under https://hub.docker.com/u/solsson/.
+Our kafka images are tested in production with https://github.com/Yolean/kubernetes-kafka/.
 
-These images are tested in production with https://github.com/Yolean/kubernetes-kafka/.
+You most likely need to mount your own config files, or for `./bin/kafka-server-start.sh` use overrides like:
+```
+  --override zookeeper.connect=zookeeper:2181
+  --override log.dirs=/var/lib/kafka/data/topics
+  --override log.retention.hours=-1
+  --override broker.id=0
+  --override advertised.listener=PLAINTEXT://kafka-0:9092
+```
 
 ## One image to rule them all
 
 Official [Kafka distributions](http://kafka.apache.org/downloads) contain startup scripts and config for various services and clients. Thus `./kafka` produces a multi-purpose image for direct use and specialized docker builds.
+
+We could build specialized images like `kafka-server` but we have two reasons not to:
+ * Won't be as transparent in Docker Hub because you can't use Automated Build without scripting.
+ * In reality you'll need to control your own config anyway.
 
 ### Example of downstream image: Kafka Connect
 
