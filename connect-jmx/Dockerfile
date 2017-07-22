@@ -1,5 +1,7 @@
 FROM solsson/kafka:0.11.0.0
 
+ENV srijiths-kafka-connectors-version=dc0a7122650e697d3ae97c970a4785bbed949479
+
 RUN set -ex; \
   buildDeps='curl ca-certificates'; \
   apt-get update && apt-get install -y $buildDeps --no-install-recommends; \
@@ -11,7 +13,7 @@ RUN set -ex; \
   \
   mkdir ./kafka-connectors; \
   cd ./kafka-connectors; \
-  curl -SLs https://github.com/srijiths/kafka-connectors/archive/dc0a7122650e697d3ae97c970a4785bbed949479.tar.gz \
+  curl -SLs https://github.com/srijiths/kafka-connectors/archive/$srijiths-kafka-connectors-version.tar.gz \
     | tar -xzf - --strip-components=1 -C ./; \
   mvn clean install; \
   cd ..; \
