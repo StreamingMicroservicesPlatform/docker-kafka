@@ -19,7 +19,6 @@ RUN set -ex; \
   rm /var/log/dpkg.log /var/log/apt/*.log
 
 WORKDIR /opt/kafka
-ENTRYPOINT ["bin/kafka-server-start.sh"]
 
-RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/' config/server.properties
-CMD ["config/server.properties"]
+COPY docker-help.sh /usr/local/bin/docker-help
+ENTRYPOINT ["docker-help"]
