@@ -1,0 +1,74 @@
+version: '2.0'
+services:
+
+  zookeeper:
+    build: ../kafka
+    entrypoint: ./bin/zookeeper-server-start.sh
+    command:
+      - config/zookeeper.properties
+
+  kafka-0:
+    build: ../kafka
+    links:
+      - zookeeper
+    environment:
+      - JMX_PORT=5555
+    expose:
+      - '5555'
+    command:
+      - config/server.properties
+      - --override
+      -   broker.id=0
+      - --override
+      -   advertised.listener=PLAINTEXT://kafka-0:9092
+
+  prometheus-jmx-exporter:
+    build: ../prometheus-jmx-exporter
+    labels:
+      com.yolean.build-target: ""
+    links:
+      - kafka-0
+    # patch a config before start, as the image is designed for use with local JMX (same k8s pod)
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - >
+        sed -i 's|127.0.0.1|kafka-0|' example_configs/kafka-prometheus-monitoring.yml;
+        cat example_configs/kafka-prometheus-monitoring.yml;
+        java -jar jmx_prometheus_httpserver.jar
+        5556 example_configs/kafka-prometheus-monitoring.yml
+
+  test-metrics-export:
+    image: solsson/curl@sha256:8b0927b81d10043e70f3e05e33e36fb9b3b0cbfcbccdb9f04fd53f67a270b874
+    labels:
+      com.yolean.build-contract: ""
+    command:
+      - --fail-early
+      - --retry
+      -   '10'
+      - --retry-delay
+      -   '3'
+      - --retry-connrefused
+      - http://prometheus-jmx-exporter:5556/metrics
+
+  connect-jmx:
+    build: ../connect-jmx
+    labels:
+      com.yolean.build-target: ""
+    links:
+      - kafka-0
+
+  # TODO starts too fast, gets % KC_ERROR: Failed to query metadata for topic jmx-test: Local: Broker transport failure
+  # needs to retry until kafka+topic exists
+  test-jmx:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    command:
+      - -b
+      - kafka-0:9092
+      - -t
+      - jmx-test
+      - -C
+      - -o
+      - beginning
