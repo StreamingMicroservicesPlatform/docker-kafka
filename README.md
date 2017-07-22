@@ -12,6 +12,18 @@ and related `kafka-` images under https://hub.docker.com/u/solsson/.
 
 These images are tested in production with https://github.com/Yolean/kubernetes-kafka/.
 
+## One image to rule them all
+
+Official [Kafka distributions](http://kafka.apache.org/downloads) contain startup scripts and config for various services and clients. Thus `./kafka` produces a multi-purpose image for direct use and specialized docker builds.
+
+### Example of downstream image: Kafka Connect
+
+See ./connect-jmx
+
+### Example downstream image: Kafka Streams
+
+TODO
+
 ## Building
 
 Rudimentary compliance with kubernetes-kafka is tested using a [build-contract](https://github.com/Yolean/build-contract/).
@@ -31,11 +43,8 @@ $compose up test-topic-create-1
 # can a producer send messages using snappy (has issues before with a class missing in the image)
 $compose up test-snappy-compression
 $compose up test-consume-all
-# demo the prometheus exporter image
-$compose up prometheus-jmx-exporter test-metrics-export
 # demo the log/file aggregation image
-$compose up --build -d connect-files
-$compose up test-consume-files
+docker-compose -f build-contracts/docker-compose.files-aggregation.yml up
 # demo the JMX->kafka image
-$compose up --build connect-jmx test-jmx
+docker-compose -f build-contracts/docker-compose.monitoring.yml up
 ```

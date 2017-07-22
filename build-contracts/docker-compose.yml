@@ -9,12 +9,11 @@ services:
 
   kafka-0:
     build: ../kafka
+    image: solsson/kafka
+    labels:
+      com.yolean.build-target: ""
     links:
       - zookeeper
-    environment:
-      - JMX_PORT=5555
-    expose:
-      - '5555'
     command:
       - config/server.properties
       - --override
@@ -22,34 +21,6 @@ services:
       # unlike Kubernetes StatefulSet, compose gives containers a random hostname (leading to redirects to a hex name)
       - --override
       -   advertised.listener=PLAINTEXT://kafka-0:9092
-
-  prometheus-jmx-exporter:
-    #build: ../prometheus-jmx-exporter
-    image: solsson/kafka-prometheus-jmx-exporter
-    labels:
-      com.yolean.build-target: ""
-    links:
-      - kafka-0
-    # patch a config before start, as the image is designed for use with local JMX (same k8s pod)
-    entrypoint: /bin/bash
-    command:
-      - -c
-      - >
-        sed -i 's|127.0.0.1|kafka-0|' example_configs/kafka-prometheus-monitoring.yml;
-        cat example_configs/kafka-prometheus-monitoring.yml;
-        java -jar jmx_prometheus_httpserver.jar
-        5556 example_configs/kafka-prometheus-monitoring.yml
-
-  test-metrics-export:
-    image: solsson/curl@sha256:8b0927b81d10043e70f3e05e33e36fb9b3b0cbfcbccdb9f04fd53f67a270b874
-    command:
-      - --fail-early
-      - --retry
-      -   '10'
-      - --retry-delay
-      -   '3'
-      - --retry-connrefused
-      - http://prometheus-jmx-exporter:5556/metrics
 
   test-topic-create:
     build: ../kafka
@@ -78,6 +49,8 @@ services:
       - -exc
       - sleep 5; echo "Message from $${HOSTNAME} at $$(date)" | kafkacat -z snappy -b kafka-0:9092 -t test1 -P
 
+  # TODO starts too fast, gets % KC_ERROR: Failed to query metadata for topic test1: Local: Broker transport failure
+  # needs to retry until kafka+topic exists
   test-consume-all:
     image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
     labels:
@@ -91,44 +64,3 @@ services:
       - -o
       - beginning
       - -e
-
-  connect-files:
-    build: ../connect-files
-    links:
-      - kafka-0
-    # test with some real logs
-    volumes:
-      - /var/log:/logs
-
-  test-consume-files:
-    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
-    labels:
-      com.yolean.build-contract: ""
-    command:
-      - -b
-      - kafka-0:9092
-      - -t
-      - files-000
-      - -C
-      - -o
-      - beginning
-
-  connect-jmx:
-    build: ../connect-jmx
-    labels:
-      com.yolean.build-target: ""
-    links:
-      - kafka-0
-
-  test-jmx:
-    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
-    labels:
-      com.yolean.build-contract: ""
-    command:
-      - -b
-      - kafka-0:9092
-      - -t
-      - jmx-test
-      - -C
-      - -o
-      - beginning
