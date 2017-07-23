@@ -3,7 +3,7 @@ FROM debian:stable-20170620
 ENV KAFKA_VERSION=0.11.0.0 ZULU_OPENJDK_VERSION="8=8.21.0.1" KAFKA_BIN_SCALA_VERSION=2.11
 
 RUN set -ex; \
-  runDeps=''; \
+  runDeps='netcat-openbsd'; \
   buildDeps='curl ca-certificates gnupg dirmngr'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   \
