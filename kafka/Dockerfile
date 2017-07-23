@@ -2,7 +2,7 @@ FROM openjdk:8u131-jre-alpine
 
 ENV KAFKA_VERSION=0.11.0.0 SCALA_VERSION=2.12.2
 
-RUN set -e; cd /usr/local; \
+RUN set -e; mkdir -p /opt && cd /opt; \
   GRADLE_VERSION=4.0 PATH=$PATH:$(pwd)/gradle-$GRADLE_VERSION/bin; \
   apk add  --no-cache --virtual .build-deps \
     curl \
@@ -38,7 +38,7 @@ RUN set -e; cd /usr/local; \
 
 RUN apk add --no-cache bash
 
-WORKDIR /usr/local/kafka
+WORKDIR /opt/kafka
 ENTRYPOINT ["bin/kafka-server-start.sh"]
 
 RUN sed -i 's/zookeeper.connect=localhost:2181/zookeeper.connect=zookeeper:2181/' config/server.properties
