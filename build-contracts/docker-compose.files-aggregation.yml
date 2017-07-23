@@ -11,8 +11,11 @@ services:
     build: ../kafka
     links:
       - zookeeper
+    entrypoint: ./bin/bin/kafka-server-start.sh
     command:
       - config/server.properties
+      - --override
+      -   zookeeper.connect=zookeeper:2181
       - --override
       -   broker.id=0
       - --override

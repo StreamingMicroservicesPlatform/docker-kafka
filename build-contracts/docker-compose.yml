@@ -14,8 +14,11 @@ services:
       com.yolean.build-target: ""
     links:
       - zookeeper
+    entrypoint: ./bin/kafka-server-start.sh
     command:
       - config/server.properties
+      - --override
+      -   zookeeper.connect=zookeeper:2181
       - --override
       -   broker.id=0
       # unlike Kubernetes StatefulSet, compose gives containers a random hostname (leading to redirects to a hex name)
