@@ -1,22 +1,19 @@
-FROM debian:stable-20170620
+# The only assumption we make about this FROM is that it has a JRE in path
+FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cfdf1a917a183f26
 
-ENV KAFKA_VERSION=0.11.0.0 ZULU_OPENJDK_VERSION="8=8.21.0.1" KAFKA_BIN_SCALA_VERSION=2.11
+ENV KAFKA_VERSION=0.11.0.0 KAFKA_BIN_SCALA_VERSION=2.11
 
 RUN set -ex; \
   runDeps='netcat-openbsd'; \
-  buildDeps='curl ca-certificates gnupg dirmngr'; \
+  buildDeps='curl ca-certificates'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
-  \
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9; \
-  echo 'deb http://repos.azulsystems.com/debian stable main' > /etc/apt/sources.list.d/zulu.list; \
-  apt-get update && apt-get install -y zulu-${ZULU_OPENJDK_VERSION} --no-install-recommends; \
   \
   mkdir -p /opt/kafka; \
   curl -SLs "https://www-eu.apache.org/dist/kafka/$KAFKA_VERSION/kafka_$KAFKA_BIN_SCALA_VERSION-$KAFKA_VERSION.tgz" | tar -xzf - --strip-components=1 -C /opt/kafka; \
   \
   apt-get purge -y --auto-remove $buildDeps; \
   rm -rf /var/lib/apt/lists/*; \
-  rm /var/log/dpkg.log /var/log/apt/*.log
+  rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
 WORKDIR /opt/kafka
 
