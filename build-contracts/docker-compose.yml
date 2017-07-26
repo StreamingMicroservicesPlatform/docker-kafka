@@ -1,0 +1,69 @@
+version: '2.0'
+services:
+
+  zookeeper:
+    build: ../kafka
+    entrypoint: ./bin/zookeeper-server-start.sh
+    command:
+      - config/zookeeper.properties
+
+  kafka-0:
+    build: ../kafka
+    image: solsson/kafka
+    labels:
+      com.yolean.build-target: ""
+    links:
+      - zookeeper
+    entrypoint: ./bin/kafka-server-start.sh
+    command:
+      - config/server.properties
+      - --override
+      -   zookeeper.connect=zookeeper:2181
+      - --override
+      -   broker.id=0
+      # unlike Kubernetes StatefulSet, compose gives containers a random hostname (leading to redirects to a hex name)
+      - --override
+      -   advertised.listener=PLAINTEXT://kafka-0:9092
+
+  test-topic-create:
+    build: ../kafka
+    labels:
+      com.yolean.build-contract: ""
+    links:
+      - kafka-0
+    entrypoint: ./bin/kafka-topics.sh
+    command:
+      - --zookeeper
+      -   zookeeper:2181
+      - --create
+      - --topic
+      -   test-topic-create
+      - --partitions
+      -   '1'
+      - --replication-factor
+      -   '1'
+
+  test-snappy-compression:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    entrypoint: /bin/sh
+    command:
+      - -exc
+      - sleep 5; echo "Message from $${HOSTNAME} at $$(date)" | kafkacat -z snappy -b kafka-0:9092 -t test1 -P
+
+  # TODO starts too fast, gets % KC_ERROR: Failed to query metadata for topic test1: Local: Broker transport failure
+  # needs to retry until kafka+topic exists
+  test-consume-all:
+    image: solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
+    labels:
+      com.yolean.build-contract: ""
+    command:
+      - -b
+      - kafka-0:9092
+      - -t
+      - test1
+      - -C
+      - -o
+      - beginning
+      - -e
