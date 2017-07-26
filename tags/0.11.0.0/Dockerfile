@@ -1,0 +1,1 @@
+FROM solsson/kafka@sha256:75ecbf6c7fb9f814a0ab0e44c5d48d3cb4dd688a244a377f6986eefcb1498614

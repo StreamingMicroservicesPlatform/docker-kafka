@@ -1,19 +1,19 @@
 # Kafka docker builds
 
-Automated [Kafka](http://kafka.apache.org/) builds for [solsson/kafka](https://hub.docker.com/r/solsson/kafka/)
-and related `kafka-` images under https://hub.docker.com/u/solsson/.
+The no-surprises Kafka docker image. Public build at [solsson/kafka](https://hub.docker.com/r/solsson/kafka/), with 100k+ pulls to date.
 
----
+Design goals:
+ * Transparent build: self-contained in Dockerfile && directly from source.
+ * Recommend use of image SHAs for security and stability ([#11](https://github.com/solsson/dockerfiles/pull/11)).
+ * Same basic platform choices as the more [thoroughly validated](https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/) [Confluent Platform distribution](https://hub.docker.com/r/confluentinc/cp-kafka/) ([#5](https://github.com/solsson/dockerfiles/pull/5), [#9](https://github.com/solsson/dockerfiles/pull/9)).
+ * Supports the other tools bundled with Kafka distributions - Zookeeper, topic admin, Connect & Streams ([#7](https://github.com/solsson/dockerfiles/pull/7)).
+ * Help Kafka beginners through conventions to expose config changes.
+ * Avoid any [recommendations to use `--net=host`](http://docs.confluent.io/current/cp-docker-images/docs/quickstart.html) because it is impractical in orchestrated multi-node environments.
+ * Support Kubernetes; transparent and tweakable cluster setups like [Yolean/kubernetes-kafka](https://github.com/Yolean/kubernetes-kafka).
 
-This repo used to contain misc dockerfiles, but they've moved to separate repositories for dockerization projects.
-We've kept the repository name to avoid breaking the automated build of solsson/kafka in Docker Hub.
+## How to use
 
-For legacy Dockerfiles from this repo (if you navigated to here from a Docker Hub [solsson](https://hub.docker.com/u/solsson/) image),
-see https://github.com/solsson/dockerfiles/tree/misc-dockerfiles.
-
----
-
-Our kafka images are tested in production with https://github.com/Yolean/kubernetes-kafka/.
+The default entrypoint `docker run solsson/kafka` will list "bin" scripts and sample config files. Make a guess like `docker run --entrypoint ./bin/kafka-server-start.sh solsson/kafka` or `docker run --entrypoint ./bin/kafka-topics.sh solsson/kafka` to see tool-specific help.
 
 You most likely need to mount your own config files, or for `./bin/kafka-server-start.sh` use overrides like:
 ```
@@ -24,25 +24,20 @@ You most likely need to mount your own config files, or for `./bin/kafka-server-
   --override advertised.listener=PLAINTEXT://kafka-0:9092
 ```
 
-## One image to rule them all
+Beware of `log4j.properties`' location if you mount config. Kafka's bin scripts will guess path unless you set a `KAFKA_LOG4J_OPTS` env.
 
-Official [Kafka distributions](http://kafka.apache.org/downloads) contain startup scripts and config for various services and clients. Thus `./kafka` produces a multi-purpose image for direct use and specialized docker builds.
+## Upgrade from pre 0.11 images
 
-We could build specialized images like `kafka-server` but we have two reasons not to:
- * Won't be as transparent in Docker Hub because you can't use Automated Build without scripting.
- * In reality you'll need to control your own config anyway.
+Earlier images used `./bin/kafka-server-start.sh` as entrypoint
+and had the `zookeeper.connect=zookeeper:2181` (instead of localhost:2181) built in. At upgrade use the command recommended above to restore that functionality.
 
-### Example of downstream image: Kafka Connect
+## Build and test locally
 
-See ./connect-jmx
+To build your own kafka image simply run `docker build ./kafka`.
 
-### Example downstream image: Kafka Streams
-
-TODO
-
-## Building
-
-Rudimentary compliance with kubernetes-kafka is tested using a [build-contract](https://github.com/Yolean/build-contract/).
+When we develop locally --- stream processing images, monitoring,
+compliance with kubernetes-kafka etc ---
+we use a [build-contract](https://github.com/Yolean/build-contract/).
 
 Build and test using: `docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/:/source solsson/build-contract test`. However... while timing issues remain you need some manual intervention:
 
@@ -60,3 +55,11 @@ docker-compose -f build-contracts/docker-compose.files-aggregation.yml up
 # demo the JMX->kafka image
 docker-compose -f build-contracts/docker-compose.monitoring.yml up
 ```
+
+## Why is the repo named `dockerfiles`?
+
+This repo used to contain misc dockerfiles, but they've moved to separate repositories for dockerization projects.
+We've kept the repository name to avoid breaking the automated build of solsson/kafka in Docker Hub.
+
+For legacy Dockerfiles from this repo (if you navigated to here from a Docker Hub [solsson](https://hub.docker.com/u/solsson/) image),
+see https://github.com/solsson/dockerfiles/tree/misc-dockerfiles.
