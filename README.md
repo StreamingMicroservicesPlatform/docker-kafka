@@ -7,9 +7,9 @@ Design goals:
  * Recommend use of image SHAs for security and stability ([#11](https://github.com/solsson/dockerfiles/pull/11)).
  * Same basic platform choices as the more [thoroughly validated](https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/) [Confluent Platform distribution](https://hub.docker.com/r/confluentinc/cp-kafka/) ([#5](https://github.com/solsson/dockerfiles/pull/5), [#9](https://github.com/solsson/dockerfiles/pull/9)).
  * Supports the other tools bundled with Kafka distributions - Zookeeper, topic admin, Connect & Streams ([#7](https://github.com/solsson/dockerfiles/pull/7)).
- * Help Kafka beginners through conventions to expose config changes.
- * Avoid any [recommendations to use `--net=host`](http://docs.confluent.io/current/cp-docker-images/docs/quickstart.html) because it is impractical in orchestrated multi-node environments.
- * Support Kubernetes; transparent and tweakable cluster setups like [Yolean/kubernetes-kafka](https://github.com/Yolean/kubernetes-kafka).
+ * Encourage conventions to clearly show all non-default config, to help Kafka beginners.
+ * Avoid recommending [--net=host](http://docs.confluent.io/current/cp-docker-images/docs/quickstart.html) as such practices are impractical in multi-node environments.
+ * Support [Kubernetes](http://kubernetes.io); transparent and tweakable cluster setups like [Yolean/kubernetes-kafka](https://github.com/Yolean/kubernetes-kafka).
 
 ## How to use
 
@@ -25,6 +25,8 @@ You most likely need to mount your own config files, or for `./bin/kafka-server-
 ```
 
 Beware of `log4j.properties`' location if you mount config. Kafka's bin scripts will guess path unless you set a `KAFKA_LOG4J_OPTS` env.
+
+We avoid environment variable rules for config override, used in [wurstmeister](https://hub.docker.com/r/wurstmeister/kafka/) and [cp-kafka](https://hub.docker.com/r/confluentinc/cp-kafka/), because bin scripts are quite heavy on env use anyway so you'd get a toxic mix. Also for cluster setups to share config across instances we tend to need bash tricks. See for example [this gotcha](https://github.com/Yolean/kubernetes-kafka/pull/45/commits/db264b09cc7903346238b4464183f3a9571f65e6) and the overrides needed for  [external access](https://github.com/Yolean/kubernetes-kafka/issues/13).
 
 ## Upgrade from pre 0.11 images
 
