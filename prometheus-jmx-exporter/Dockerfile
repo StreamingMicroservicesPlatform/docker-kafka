@@ -6,10 +6,14 @@ ENV EXPORTER_REPO=github.com/prometheus/jmx_exporter
 WORKDIR /usr/local/
 
 RUN set -ex; \
-  export DEBIAN_FRONTEND=noninteractive; \
   runDeps=''; \
-  buildDeps='curl ca-certificates maven'; \
+  buildDeps='curl ca-certificates'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
+  \
+  MAVEN_VERSION=3.5.0 PATH=$PATH:$(pwd)/maven/bin; \
+  mkdir ./maven; \
+  curl -SLs https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzf - --strip-components=1 -C ./maven; \
+  mvn --version; \
   \
   mkdir ./jmx_exporter; \
   curl -SLs https://$EXPORTER_REPO/archive/$EXPORTER_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./jmx_exporter; \
@@ -19,7 +23,7 @@ RUN set -ex; \
   mv example_configs ../; \
   cd ..; \
   \
-  rm -Rf ./jmx_exporter /root/.m2; \
+  rm -Rf ./jmx_exporter ./maven /root/.m2; \
   \
   apt-get purge -y --auto-remove $buildDeps; \
   rm -rf /var/lib/apt/lists/*; \
