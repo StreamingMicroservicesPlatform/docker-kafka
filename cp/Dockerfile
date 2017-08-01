@@ -2,10 +2,11 @@ FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cf
 
 ENV CP_VERSION=3.3.0
 
-WORKDIR /usr
+WORKDIR /usr/local
 
 RUN set -ex; \
-  WORKDIR=$PWD; ls -l $WORKDIR/share/java; \
+  WORKDIR=$PWD; \
+  mkdir -p $WORKDIR/share/java; \
   \
   export DEBIAN_FRONTEND=noninteractive; \
   runDeps=''; \
@@ -38,11 +39,11 @@ RUN set -ex; \
   mv /opt/src/common/package/target/common-package-$CP_VERSION-package/share/java/confluent-common ./share/java/; \
   mv /opt/src/rest-utils/package/target/rest-utils-package-$CP_VERSION-package/share/java/rest-utils ./share/java/; \
   \
-  mv /opt/src/schema-registry/package-schema-registry/target/kafka-schema-registry-package-$CP_VERSION-package/bin/* ./local/bin/; \
+  mv /opt/src/schema-registry/package-schema-registry/target/kafka-schema-registry-package-$CP_VERSION-package/bin/* ./bin/; \
   mv /opt/src/schema-registry/package-schema-registry/target/kafka-schema-registry-package-$CP_VERSION-package/share/java/* ./share/java/; \
   mv /opt/src/schema-registry/package-schema-registry/target/kafka-schema-registry-package-$CP_VERSION-package/etc/* /etc/; \
   \
-  mv /opt/src/kafka-rest/target/kafka-rest-$CP_VERSION-package/bin/* ./local/bin/; \
+  mv /opt/src/kafka-rest/target/kafka-rest-$CP_VERSION-package/bin/* ./bin/; \
   mv /opt/src/kafka-rest/target/kafka-rest-$CP_VERSION-package/share/java/* ./share/java/; \
   mv /opt/src/kafka-rest/target/kafka-rest-$CP_VERSION-package/etc/* /etc; \
   \
