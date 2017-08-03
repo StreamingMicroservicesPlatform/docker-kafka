@@ -1,6 +1,7 @@
+# Select digest to have the same FROM as kafka-jre
 FROM solsson/kafkacat@sha256:1266d140c52cb39bf314b6f22b6d7a01c4c9084781bc779fdfade51214a713a8
 
-ENV KUBERNETES_VERSION=1.7.1
+ENV KUBERNETES_VERSION=1.7.2
 
 RUN set -ex; \
   runDeps=''; \
