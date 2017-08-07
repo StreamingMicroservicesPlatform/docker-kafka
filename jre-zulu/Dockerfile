@@ -1,6 +1,6 @@
-FROM debian:stable-20170620
+FROM debian:stable-20170723
 
-ENV ZULU_OPENJDK_VERSION="8=8.21.0.1"
+ENV ZULU_OPENJDK_VERSION="8=8.23.0.3"
 
 RUN set -ex; \
   runDeps=''; \
