@@ -1,14 +1,19 @@
-FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cfdf1a917a183f26
+FROM solsson/kafka@sha256:b27560de08d30ebf96d12e74f80afcaca503ad4ca3103e63b1fd43a2e4c976ce
 
 ENV CP_VERSION=3.3.0
 
 WORKDIR /usr/local
 
-# TODO confluent common and rest-utils might not be needed
+ADD pom.xml .
 
 RUN set -ex; \
   WORKDIR=$PWD; \
   mkdir -p $WORKDIR/share/java; \
+  \
+  # avoid patching kafka-run-class.sh, by hijacking one of the paths where it globs for jars
+  JARS_DIR=$WORKDIR/share/java; \
+  mkdir -p /opt/kafka/core/build; \
+  ln -s $JARS_DIR /opt/kafka/core/build/dependant-libs-${SCALA_VERSION}; \
   \
   export DEBIAN_FRONTEND=noninteractive; \
   runDeps=''; \
@@ -20,25 +25,7 @@ RUN set -ex; \
   curl -SLs https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzf - --strip-components=1 -C /opt/maven; \
   mvn --version; \
   \
-  mkdir -p /opt/src/common; cd /opt/src/common; \
-  curl -SLs https://github.com/confluentinc/common/archive/v$CP_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./; \
-  mvn install; \
-  \
-  mkdir -p /opt/src/rest-utils; cd /opt/src/rest-utils; \
-  curl -SLs https://github.com/confluentinc/rest-utils/archive/v$CP_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./; \
-  mvn install; \
-  \
-  mkdir -p /opt/src/kafka-connect-jdbc; cd /kafka-connect-jdbc; \
-  curl -SLs https://github.com/confluentinc/kafka-connect-jdbc/archive/v$CP_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./; \
-  mvn install; \
-  \
-  cd $WORKDIR; \
-  \
-  mv /opt/src/common/package/target/common-package-$CP_VERSION-package/share/java/confluent-common ./share/java/; \
-  mv /opt/src/rest-utils/package/target/rest-utils-package-$CP_VERSION-package/share/java/rest-utils ./share/java/; \
-  mv /opt/src/kafka-connect-jdbc/target/kafka-connect-jdbc-$CP_VERSION-package/share/java/kafka-connect-jdbc ./share/java/; \
-  \
-  curl -sLS -o ./share/java/mariadb-java-client-2.1.0.jar https://downloads.mariadb.com/Connectors/java/connector-java-2.1.0/mariadb-java-client-2.1.0.jar; \
+  mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=$JARS_DIR; \
   \
   rm -Rf /opt/src /opt/maven /root/.m2; \
   \
@@ -46,5 +33,5 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
-COPY docker-help.sh /usr/local/bin/docker-help
-ENTRYPOINT ["docker-help"]
+#COPY docker-help.sh /usr/local/bin/docker-help
+#ENTRYPOINT ["docker-help"]
