@@ -2,19 +2,12 @@ FROM solsson/kafka@sha256:b27560de08d30ebf96d12e74f80afcaca503ad4ca3103e63b1fd43
 
 ENV CP_VERSION=3.3.0
 
-WORKDIR /usr/local
+ADD pom.xml /tmp/pom.xml
 
-ADD pom.xml .
+# avoid patching kafka-run-class.sh, by hijacking one of the unused paths where it globs for jars
+ENV JARS_DIR=/opt/kafka/core/build/dependant-libs-${SCALA_VERSION}
 
 RUN set -ex; \
-  WORKDIR=$PWD; \
-  mkdir -p $WORKDIR/share/java; \
-  \
-  # avoid patching kafka-run-class.sh, by hijacking one of the paths where it globs for jars
-  JARS_DIR=$WORKDIR/share/java; \
-  mkdir -p /opt/kafka/core/build; \
-  ln -s $JARS_DIR /opt/kafka/core/build/dependant-libs-${SCALA_VERSION}; \
-  \
   export DEBIAN_FRONTEND=noninteractive; \
   runDeps=''; \
   buildDeps='curl ca-certificates'; \
@@ -25,7 +18,7 @@ RUN set -ex; \
   curl -SLs https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzf - --strip-components=1 -C /opt/maven; \
   mvn --version; \
   \
-  mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=$JARS_DIR; \
+  mvn -f /tmp/pom.xml dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=$JARS_DIR; \
   \
   rm -Rf /opt/src /opt/maven /root/.m2; \
   \
@@ -33,5 +26,4 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
-#COPY docker-help.sh /usr/local/bin/docker-help
-#ENTRYPOINT ["docker-help"]
+ENTRYPOINT ["./bin/connect-distributed.sh"]
