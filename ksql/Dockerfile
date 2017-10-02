@@ -22,4 +22,11 @@ RUN set -ex; \
   curl -SLs ${ksql_repo}/archive/${ksql_version}.tar.gz | tar -xzf - --strip-components=1 -C ./; \
   mvn package; \
   \
+  cd $WORKDIR; \
+  \
   echo "TODO cleanup, but for now we just want a ksql build to experiment with, and possibly re-build";
+
+RUN echo "cont'd at temp layer boundary"; set -ex; \
+  cd /opt/src/ksql; \
+  find . -name *-package; \
+  cat ksql-examples/Dockerfile
