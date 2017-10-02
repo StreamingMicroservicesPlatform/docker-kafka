@@ -42,6 +42,9 @@ RUN set -ex; \
   mv /opt/src/ksql/ksql-rest-app/target/ksql-rest-app-${KSQL_BUILD}-package/bin/* ./bin/; \
   mv /opt/src/ksql/ksql-rest-app/target/ksql-rest-app-${KSQL_BUILD}-package/share/java/ksql-rest-app ./share/java/; \
   \
+  # fixes NoClassDefFoundError: com/google/common/collect/ImmutableList
+  mv -v /opt/src/ksql/ksql-rest-app/target/ksql-rest-app-${KSQL_BUILD}-development/share/java/ksql-rest-app/*guava* ./share/java/ksql-rest-app/; \
+  \
   #mv /opt/src/ksql/ksql-examples/target/ksql-examples-${KSQL_BUILD}-package/share/java/ksql-examples ./share/java/; \
   #mv /opt/src/ksql/ksql-cli/target/ksql-cli-${KSQL_BUILD}-package/share/java/ksql-cli ./share/java/; \
   \
