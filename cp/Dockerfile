@@ -1,4 +1,4 @@
-FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cfdf1a917a183f26
+FROM solsson/kafka-jre@sha256:61196845eafb0970cf94598fd723a66407be31cd8bab83e3a29b4e602683280d
 
 ENV CP_VERSION=3.3.0
 
