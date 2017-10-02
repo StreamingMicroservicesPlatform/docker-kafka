@@ -21,6 +21,8 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
+ENV JAVA_HOME=/usr/lib/jvm/zulu-8
+
 # If a downstream image changes these values it must also re-run locale-gen as below
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 
