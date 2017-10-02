@@ -1,7 +1,7 @@
 # The only assumption we make about this FROM is that it has a JRE in path
-FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cfdf1a917a183f26
+FROM solsson/kafka-jre@sha256:61196845eafb0970cf94598fd723a66407be31cd8bab83e3a29b4e602683280d
 
-ENV KAFKA_VERSION=0.11.0.0 SCALA_VERSION=2.11
+ENV KAFKA_VERSION=0.11.0.1 SCALA_VERSION=2.11
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
