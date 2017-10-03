@@ -45,8 +45,8 @@ RUN set -ex; \
   # fixes NoClassDefFoundError: com/google/common/collect/ImmutableList
   mv -v /opt/src/ksql/ksql-rest-app/target/ksql-rest-app-${KSQL_BUILD}-development/share/java/ksql-rest-app/*guava* ./share/java/ksql-rest-app/; \
   \
-  #mv /opt/src/ksql/ksql-examples/target/ksql-examples-${KSQL_BUILD}-package/share/java/ksql-examples ./share/java/; \
-  #mv /opt/src/ksql/ksql-cli/target/ksql-cli-${KSQL_BUILD}-package/share/java/ksql-cli ./share/java/; \
+  # let the same image be used to connect, but don't put it in rest-app's classpath
+  mv /opt/src/ksql/ksql-cli/target/ksql-cli-${KSQL_BUILD}-package /opt/ksql-cli; \
   \
   rm -Rf /opt/src /opt/maven /root/.m2; \
   \
