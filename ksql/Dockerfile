@@ -47,6 +47,11 @@ RUN set -ex; \
   \
   # let the same image be used to connect, but don't put it in rest-app's classpath
   mv /opt/src/ksql/ksql-cli/target/ksql-cli-${KSQL_BUILD}-package /opt/ksql-cli; \
+  for J in /usr/local/share/java/*; do ln -sv $J /opt/ksql-cli/share/java/; done; \
+  # maybe we could run in place, but let's keep the rest-app install clean so we don't get conflicting jars there
+  rm /opt/ksql-cli/share/java/ksql-cli/slf4j-log4j12-*; \
+  sed -i 's|base_dir=.*|base_dir=/opt/ksql-cli|' /usr/local/bin/ksql-cli; \
+  ln -sv /opt/ksql-cli/etc/ksql-cli /opt/ksql-cli/config; \
   \
   rm -Rf /opt/src /opt/maven /root/.m2; \
   \
