@@ -5,7 +5,7 @@ ENV KUBERNETES_VERSION=1.7.8 KUBERNETES_CLIENTS_SHA256=90d64d3642b1fd25d19f36980
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
-  runDeps='curl ca-certificates'; \
+  runDeps='curl ca-certificates procps'; \
   buildDeps=''; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   rm -rf /var/lib/apt/lists/*; \
