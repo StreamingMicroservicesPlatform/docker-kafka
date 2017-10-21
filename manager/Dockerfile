@@ -1,6 +1,6 @@
-FROM solsson/kafka-jre@sha256:7765513cf5fa455a672a06f584058c1c81cc0b3b56cc56b0cfdf1a917a183f26
+FROM solsson/kafka-jre@sha256:06dabfc8cacd0687c8f52c52afd650444fb6d4a8e0b85f68557e6e7a5c71667c
 
-ENV KAFKA_MANAGER_VERSION=1.3.3.8
+ENV KAFKA_MANAGER_VERSION=1.3.3.14
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
