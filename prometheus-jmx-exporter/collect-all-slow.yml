@@ -1,6 +1,5 @@
 # https://github.com/prometheus/jmx_exporter
 startDelaySeconds: 0
-hostPort: 127.0.0.1:5555
 jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
 ssl: false
 lowercaseOutputName: false
