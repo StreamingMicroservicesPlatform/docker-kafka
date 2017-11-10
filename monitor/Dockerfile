@@ -41,4 +41,5 @@ RUN set -ex; \
 
 WORKDIR /opt/kafka-monitor
 
-ENTRYPOINT ["./bin/kafka-monitor-start.sh /opt/kafka-monitor/config/kafka-monitor.properties"]
+ENTRYPOINT ["./bin/kafka-monitor-start.sh"]
+CMD ["/opt/kafka-monitor/config/kafka-monitor.properties"]
