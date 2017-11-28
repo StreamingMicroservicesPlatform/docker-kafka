@@ -3,7 +3,7 @@ FROM solsson/kafka-jre@sha256:06dabfc8cacd0687c8f52c52afd650444fb6d4a8e0b85f6855
 ENV CP_ARCHIVE_VERSION=v4.0.0 \
     CP_PACKAGE_VERSION=4.0.0 \
     MAVEN_VERSION=3.5.2 \
-    MAVEN_FLAGS=""
+    MAVEN_FLAGS="-Dmaven.test.skip=true"
 # Default versions are found in the corresponding branch of: https://github.com/confluentinc/common/blob/master/pom.xml
 
 WORKDIR /usr/local
