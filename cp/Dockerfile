@@ -1,9 +1,9 @@
 FROM solsson/kafka-jre@sha256:06dabfc8cacd0687c8f52c52afd650444fb6d4a8e0b85f68557e6e7a5c71667c
 
-ENV CP_ARCHIVE_VERSION=4.0.x \
-    CP_PACKAGE_VERSION=4.0.0-SNAPSHOT \
+ENV CP_ARCHIVE_VERSION=v4.0.0 \
+    CP_PACKAGE_VERSION=4.0.0 \
     MAVEN_VERSION=3.5.2 \
-    MAVEN_FLAGS="-Dmaven.test.skip=true -Dkafka.version=1.0.0"
+    MAVEN_FLAGS=""
 # Default versions are found in the corresponding branch of: https://github.com/confluentinc/common/blob/master/pom.xml
 
 WORKDIR /usr/local
