@@ -1,6 +1,6 @@
 FROM solsson/kafka-jre@sha256:06dabfc8cacd0687c8f52c52afd650444fb6d4a8e0b85f68557e6e7a5c71667c
 
-ENV EXPORTER_VERSION=parent-0.1.0
+ENV EXPORTER_VERSION=parent-0.2.0
 ENV EXPORTER_REPO=github.com/prometheus/jmx_exporter
 
 WORKDIR /usr/local/
@@ -11,7 +11,7 @@ RUN set -ex; \
   buildDeps='curl ca-certificates'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   \
-  MAVEN_VERSION=3.5.0 PATH=$PATH:$(pwd)/maven/bin; \
+  MAVEN_VERSION=3.5.2 PATH=$PATH:$(pwd)/maven/bin; \
   mkdir ./maven; \
   curl -SLs https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzf - --strip-components=1 -C ./maven; \
   mvn --version; \
