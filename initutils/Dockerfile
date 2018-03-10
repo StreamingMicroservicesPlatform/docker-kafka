@@ -5,7 +5,7 @@ ENV KUBERNETES_VERSION=1.9.3 KUBERNETES_CLIENT_SHA256=2f509c05f0c4e1c1ac9e98879a
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
-  runDeps='curl ca-certificates procps'; \
+  runDeps='curl ca-certificates procps netcat'; \
   buildDeps=''; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   rm -rf /var/lib/apt/lists/*; \
