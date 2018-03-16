@@ -1,9 +1,9 @@
 FROM solsson/kafka-jre@sha256:61196845eafb0970cf94598fd723a66407be31cd8bab83e3a29b4e602683280d
 
-ENV ksql_version=dc1ad22e95793252c47f2a66656417e64e0fec21 ksql_repo=https://github.com/confluentinc/ksql
+ENV ksql_version=v0.5 ksql_repo=https://github.com/confluentinc/ksql
 
-ENV CP_VERSION=3.3.0
-ENV KSQL_BUILD=0.1-SNAPSHOT
+ENV CP_VERSION=4.0.0
+ENV KSQL_BUILD=4.1.0-SNAPSHOT
 
 WORKDIR /usr/local
 
@@ -16,7 +16,7 @@ RUN set -ex; \
   buildDeps='curl ca-certificates'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   \
-  MAVEN_VERSION=3.5.0 PATH=$PATH:/opt/maven/bin; \
+  MAVEN_VERSION=3.5.3 PATH=$PATH:/opt/maven/bin; \
   mkdir -p /opt/maven; \
   curl -SLs https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzf - --strip-components=1 -C /opt/maven; \
   mvn --version; \
