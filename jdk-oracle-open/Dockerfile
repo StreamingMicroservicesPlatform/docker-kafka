@@ -14,6 +14,9 @@ RUN set -ex; \
   tar xvzf jdk.tar.gz; \
   rm jdk.tar.gz; \
   \
+  rm -v jdk-10/lib/src.zip; \
+  rm -r jdk-10/man/; \
+  \
   apt-get purge -y --auto-remove $buildDeps; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
