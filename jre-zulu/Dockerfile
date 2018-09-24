@@ -1,6 +1,6 @@
 FROM debian:stretch-slim@sha256:40b4072ce18fabe32f357f7c9ec1d256d839b1b95bcdc1f9c910823c6c2932e9
 
-ENV ZULU_OPENJDK_VERSION="8=8.23.0.3"
+ENV ZULU_OPENJDK_VERSION="8=8.31.0.1"
 
 RUN set -ex; \
   runDeps='locales'; \
