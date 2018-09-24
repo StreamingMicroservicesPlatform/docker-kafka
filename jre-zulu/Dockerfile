@@ -3,7 +3,7 @@ FROM debian:stretch-slim@sha256:ea42520331a55094b90f6f6663211d4f5a62c5781673935f
 ENV ZULU_OPENJDK_VERSION="8=8.23.0.3"
 
 RUN set -ex; \
-  runDeps='locales'; \
+  runDeps='locales procps'; \
   buildDeps='gnupg dirmngr'; \
   export DEBIAN_FRONTEND=noninteractive; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
