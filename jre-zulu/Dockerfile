@@ -33,5 +33,5 @@ RUN set -ex; \
   \
   cat /etc/locale.gen | grep -v "^#"; \
   cat /etc/default/locale; \
-  ln -s /etc/locale.alias /usr/share/locale/locale.alias; \
+  ls -la /usr/share/locale/locale.alias | grep /etc/locale.alias; \
   LC_ALL=C dpkg-reconfigure --frontend=noninteractive locales;
