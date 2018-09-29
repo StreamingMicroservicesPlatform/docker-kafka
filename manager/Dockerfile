@@ -1,4 +1,4 @@
-FROM solsson/kafka-jre@sha256:6ceb312a233f7903f554cf0d9391e9b5a927ebe9d807480506aee4d16d96bb71
+FROM solsson/kafka-jre@sha256:06dabfc8cacd0687c8f52c52afd650444fb6d4a8e0b85f68557e6e7a5c71667c
 
 ENV KAFKA_MANAGER_VERSION=1.3.3.16
 
