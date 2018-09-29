@@ -1,6 +1,6 @@
 FROM solsson/kafka-jre:8@sha256:1ebc3c27c30f5925d240aaa0858e111c2fa6d358048b0f488860ea9cd9c84822
 
-ENV EXPORTER_VERSION=parent-0.2.0
+ENV EXPORTER_VERSION=parent-0.3.1
 ENV EXPORTER_REPO=github.com/prometheus/jmx_exporter
 
 WORKDIR /usr/local/
