@@ -1,0 +1,14 @@
+# These values are passed by the hub, but if they aren't we can get them from git.
+[ -n "$SOURCE_BRANCH" ]  || SOURCE_BRANCH=${CIRCLE_TAG}
+[ -n "$SOURCE_BRANCH" ]  || SOURCE_BRANCH=$(git symbolic-ref -q --short HEAD | tr '/' '-')
+[ -n "$SOURCE_BRANCH" ]  || SOURCE_BRANCH=latest
+[ -n "$GIT_SHA1" ] || GIT_SHA1=$(git rev-parse -q HEAD)
+
+[[ "${SOURCE_BRANCH:0:1}" =~ [0-9] ]] && VERSION=${SOURCE_BRANCH/-*/}
+
+[ "$SOURCE_BRANCH" = "master" ] && SOURCE_BRANCH="latest"
+
+# Set defaults for build arguments
+[ -n "$SOURCE_TYPE" ]        || SOURCE_TYPE=git
+[ -n "$DOCKERFILE_PATH" ]    || DOCKERFILE_PATH=.
+[ -n "$IMAGE_NAME" ]         || IMAGE_NAME=pdouble16/kafka-cruise-control:$SOURCE_BRANCH

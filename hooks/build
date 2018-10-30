@@ -1,0 +1,10 @@
+#!/bin/bash -xe
+
+. ./hooks/env
+
+docker build \
+    --build-arg "SOURCE_REF=$GIT_SHA1" \
+    --build-arg "DOCKERFILE_PATH=$DOCKERFILE_PATH" \
+    --build-arg "SOURCE_TYPE=$SOURCE_TYPE" \
+    ${VERSION:+--build-arg "VERSION=$VERSION"} \
+    -t $IMAGE_NAME $DOCKERFILE_PATH
