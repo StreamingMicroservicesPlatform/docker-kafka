@@ -1,4 +1,4 @@
-FROM solsson/kafka-jre:8@sha256:1ebc3c27c30f5925d240aaa0858e111c2fa6d358048b0f488860ea9cd9c84822
+FROM solsson/jdk-opensource:11.0.1@sha256:740feb6c1ecbdf2beac1dc41405c3215511b90d83a7211f805e88f92946dd2a9
 
 ENV KAFKA_MONITOR_REPO=https://github.com/linkedin/kafka-monitor \
     KAFKA_MONITOR_VERSION=2.0.0 \
@@ -11,9 +11,9 @@ RUN set -ex; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   \
   cd /opt; \
-  GRADLE_VERSION=4.3.1 PATH=$PATH:$(pwd)/gradle-$GRADLE_VERSION/bin; \
+  GRADLE_VERSION=4.10.2 PATH=$PATH:$(pwd)/gradle-$GRADLE_VERSION/bin; \
   curl -SLs -o gradle-$GRADLE_VERSION-bin.zip https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip; \
-  echo "15ebe098ce0392a2d06d252bff24143cc88c4e963346582c8d88814758d93ac7  gradle-$GRADLE_VERSION-bin.zip" | sha256sum -c -; \
+  echo "b49c6da1b2cb67a0caf6c7480630b51c70a11ca2016ff2f555eaeda863143a29  gradle-$GRADLE_VERSION-bin.zip" | sha256sum -c -; \
   unzip gradle-$GRADLE_VERSION-bin.zip; \
   rm gradle-$GRADLE_VERSION-bin.zip; \
   gradle -v; \
@@ -25,7 +25,8 @@ RUN set -ex; \
   rm monitor.tar.gz; \
   \
   cd /opt/kafka-monitor; \
-  ./gradlew jar; \
+  rm gradlew; \
+  gradle --no-daemon jar; \
   \
   sed -i 's/localhost:2181/zookeeper:2181/' config/kafka-monitor.properties; \
   sed -i 's/localhost:9092/bootstrap:9092/' config/kafka-monitor.properties; \

@@ -1,7 +1,7 @@
 # same FROM as kafka-jre, to keep pull times down and to provide the same shell distro+version
-FROM debian:stretch-slim@sha256:ea42520331a55094b90f6f6663211d4f5a62c5781673935fe17a4dfced777029
+FROM debian:9.6-slim@sha256:f05c05a218b7a4a5fe979045b1c8e2a9ec3524e5611ebfdd0ef5b8040f9008fa
 
-ENV KUBERNETES_VERSION=1.9.6 KUBERNETES_CLIENT_SHA256=2b1ab65171bcd43a099d4f7d05d7804c737272270e83f633e1c14ceed9a99133
+ENV KUBERNETES_VERSION=1.12.3 KUBERNETES_CLIENT_SHA256=4a3baa259869f3647f0b440effb04ce3455c1026ddac7e51b6692a0ee05eab1e
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
