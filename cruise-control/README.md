@@ -1,5 +1,5 @@
 kafka-cruise-control
 ====================
 
-LinkedIn Cruise Control manager for Kafka. This image includes the Cruise Control application. It does not include Kafka or the metrics reporter.
-
+LinkedIn Cruise Control manager for Kafka. This image includes the Cruise Control application.
+It includes the metrics reporter jar at `/opt/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter.jar`.
