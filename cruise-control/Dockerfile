@@ -1,5 +1,5 @@
 FROM gradle:4.8-jdk8-slim
-ARG VERSION=2.0.6
+ARG VERSION=2.0.18
 USER root
 RUN apt-get update && apt-get install -y git
 RUN git clone -b ${VERSION} https://github.com/linkedin/cruise-control.git
