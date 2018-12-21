@@ -6,7 +6,7 @@ RUN git clone -b ${VERSION} https://github.com/linkedin/cruise-control.git
 RUN cd cruise-control && gradle jar copyDependantLibs
 
 # The container is made to work with github.com/Yolean/kubernetes-kafka, so we try to use a common base
-FROM solsson/kafka-jre:8@sha256:1ebc3c27c30f5925d240aaa0858e111c2fa6d358048b0f488860ea9cd9c84822
+FROM solsson/jdk-opensource:11.0.1@sha256:740feb6c1ecbdf2beac1dc41405c3215511b90d83a7211f805e88f92946dd2a9
 ARG SOURCE_REF
 ARG SOURCE_TYPE
 ARG DOCKERFILE_PATH
