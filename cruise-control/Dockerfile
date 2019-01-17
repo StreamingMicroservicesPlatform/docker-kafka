@@ -11,7 +11,7 @@ RUN mv -v /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise
   /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter.jar
 
 # The container is made to work with github.com/Yolean/kubernetes-kafka, so we try to use a common base
-FROM solsson/jdk-opensource:11.0.1@sha256:740feb6c1ecbdf2beac1dc41405c3215511b90d83a7211f805e88f92946dd2a9
+FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
 ARG SOURCE_REF
 ARG SOURCE_TYPE
 ARG DOCKERFILE_PATH
