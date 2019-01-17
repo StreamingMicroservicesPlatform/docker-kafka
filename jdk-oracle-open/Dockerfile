@@ -1,6 +1,9 @@
 FROM debian:9.6-slim@sha256:f05c05a218b7a4a5fe979045b1c8e2a9ec3524e5611ebfdd0ef5b8040f9008fa
 
 # See https://jdk.java.net/11/
+ENV JDK11_VERSION=11.0.2 \
+  JDK11_BUILD=7 \
+  JDK11_TGZ_SHA256=62ee5758af12bbad04f376bf2b61f114076f6d8ffe4ba8db13bb5a63b5ef0d29
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
@@ -11,11 +14,11 @@ RUN set -ex; \
   cd /usr/lib; \
   mkdir jvm; \
   cd jvm; \
-  curl -SLs -o jdk.tar.gz https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz; \
-  echo "7a6bb980b9c91c478421f865087ad2d69086a0583aeeb9e69204785e8e97dcfd jdk.tar.gz" | sha256sum -c -; \
+  curl -SLs -o jdk.tar.gz https://download.java.net/java/GA/jdk11/${JDK11_BUILD}/GPL/openjdk-${JDK11_VERSION}_linux-x64_bin.tar.gz; \
+  echo "${JDK11_TGZ_SHA256} jdk.tar.gz" | sha256sum -c -; \
   tar xvzf jdk.tar.gz; \
   rm jdk.tar.gz; \
-  mv jdk-11.0.1 jdk-11; \
+  mv jdk-11.0.2 jdk-11; \
   \
   rm -v jdk-11/lib/src.zip; \
   \
