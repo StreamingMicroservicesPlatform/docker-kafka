@@ -1,7 +1,7 @@
 # The only assumption we make about this FROM is that it has a JRE in path
 FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
 
-ENV KAFKA_VERSION=2.1.1 SCALA_VERSION=2.12 RELEASE_MANAGER_KEY=BEED4F6CB9F77D0E
+ENV KAFKA_VERSION=2.1.1 SCALA_VERSION=2.12
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
@@ -9,7 +9,8 @@ RUN set -ex; \
   buildDeps='curl ca-certificates gnupg dirmngr'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   \
-  gpg --keyserver pgpkeys.mit.edu --recv-key $RELEASE_MANAGER_KEY; \
+  curl -s   -o KEYS https://www.apache.org/dist/kafka/KEYS; \
+  gpg --import KEYS && rm KEYS; \
   \
   SCALA_BINARY_VERSION=$(echo $SCALA_VERSION | cut -f 1-2 -d '.'); \
   mkdir -p /opt/kafka; \
