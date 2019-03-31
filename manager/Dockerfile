@@ -1,6 +1,6 @@
-FROM solsson/jdk-opensource:11.0.1@sha256:740feb6c1ecbdf2beac1dc41405c3215511b90d83a7211f805e88f92946dd2a9
+FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
 
-ENV KAFKA_MANAGER_VERSION=1.3.3.22
+ENV KAFKA_MANAGER_VERSION=1.3.3.23
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
