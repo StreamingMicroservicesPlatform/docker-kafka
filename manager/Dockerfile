@@ -1,6 +1,9 @@
-FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
+FROM solsson/kafka-jre:8@sha256:1ebc3c27c30f5925d240aaa0858e111c2fa6d358048b0f488860ea9cd9c84822 \
+  as build
 
 ENV KAFKA_MANAGER_VERSION=1.3.3.23
+# https://github.com/yahoo/kafka-manager/pull/626
+ENV KAFKA_MANAGER_ARCHIVE=https://github.com/sbstnsp/kafka-manager/archive/53dcff120b89d4f827115a7297da4d5a44730979.tar.gz
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
@@ -13,7 +16,7 @@ RUN set -ex; \
   apt-get update && apt install -y --no-install-recommends nodejs; \
   \
   mkdir -p /opt/kafka-manager-src; \
-  curl -SLs "https://github.com/yahoo/kafka-manager/archive/$KAFKA_MANAGER_VERSION.tar.gz" | tar -xzf - --strip-components=1 -C /opt/kafka-manager-src; \
+  curl -SLs "${KAFKA_MANAGER_ARCHIVE}" | tar -xzf - --strip-components=1 -C /opt/kafka-manager-src; \
   \
   cd /opt/kafka-manager-src; \
   ./sbt clean dist; \
@@ -27,6 +30,10 @@ RUN set -ex; \
   apt-get purge -y --auto-remove $buildDeps nodejs; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
+
+FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
+
+COPY --from=build /opt/kafka-manager /opt/kafka-manager
 
 WORKDIR /opt/kafka-manager
 
