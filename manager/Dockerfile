@@ -1,9 +1,8 @@
 FROM solsson/kafka-jre:8@sha256:1ebc3c27c30f5925d240aaa0858e111c2fa6d358048b0f488860ea9cd9c84822 \
   as build
 
-ENV KAFKA_MANAGER_VERSION=1.3.3.23
-# https://github.com/yahoo/kafka-manager/pull/626
-ENV KAFKA_MANAGER_ARCHIVE=https://github.com/sbstnsp/kafka-manager/archive/53dcff120b89d4f827115a7297da4d5a44730979.tar.gz
+ENV KAFKA_MANAGER_VERSION=2.0.0.2
+ENV KAFKA_MANAGER_ARCHIVE=https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.tar.gz
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
