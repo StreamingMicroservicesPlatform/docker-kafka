@@ -1,6 +1,6 @@
-FROM debian:stretch-slim@sha256:40b4072ce18fabe32f357f7c9ec1d256d839b1b95bcdc1f9c910823c6c2932e9
+FROM debian:stretch-slim@sha256:bade11bf1835c9f09b011b5b1cf9f7428328416410b238d2f937966ea820be74
 
-ENV ZULU_OPENJDK_VERSION="8=8.31.0.1"
+ENV ZULU_OPENJDK_VERSION="11=11.31+11"
 
 RUN set -ex; \
   runDeps='locales procps'; \
@@ -11,17 +11,21 @@ RUN set -ex; \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9; \
   echo 'deb http://repos.azulsystems.com/debian stable main' > /etc/apt/sources.list.d/zulu.list; \
   mkdir /usr/share/man/man1; \
-  apt-get update && apt-get install -y zulu-${ZULU_OPENJDK_VERSION} --no-install-recommends; \
+  apt-get update; \
+  apt-get -s install zulu-8 | grep zulu-; \
+  apt-get -s install zulu-11 | grep zulu-; \
+  apt-get -s install zulu-12 | grep zulu-; \
+  apt-get install -y zulu-${ZULU_OPENJDK_VERSION} --no-install-recommends; \
   rm -rf /usr/share/man/man1; \
   \
-  cd /usr/lib/jvm/zulu-8-amd64/; \
+  cd /usr/lib/jvm/zulu-11-amd64/; \
   rm -rf demo man sample src.zip; \
   \
   apt-get purge -y --auto-remove $buildDeps; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
-ENV JAVA_HOME=/usr/lib/jvm/zulu-8-amd64
+ENV JAVA_HOME=/usr/lib/jvm/zulu-11-amd64
 
 # If a downstream image changes these values it must also re-run locale-gen as below
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
