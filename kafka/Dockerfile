@@ -1,5 +1,5 @@
 # The only assumption we make about this FROM is that it has a JRE in path
-FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
+FROM adoptopenjdk/openjdk11:jre-11.0.3_7@sha256:d0704102dd659b462c5255bc69f6d341caf80e887d89d4204949dd6710c3b29a
 
 ENV KAFKA_VERSION=2.2.1 SCALA_VERSION=2.12
 
