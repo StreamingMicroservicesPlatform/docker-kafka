@@ -36,10 +36,12 @@ RUN  cd /opt/kafka && native-image \
   --no-server \
   --static \
   -H:Name=kafka-topics \
-  -H:ReflectionConfigurationFiles=reflection.json \
   --report-unsupported-elements-at-runtime \
   -H:+ReportExceptionStackTraces \
   #--no-fallback \
+  -H:IncludeResourceBundles=joptsimple.HelpFormatterMessages \
+  -H:IncludeResourceBundles=joptsimple.ExceptionMessages \
+  -H:ReflectionConfigurationFiles=reflection.json \
   -cp ./libs/kafka_2.12-2.2.1.jar:./libs/kafka-clients-2.2.1.jar:./libs/scala-library-2.12.8.jar:./libs/scala-logging_2.12-3.9.0.jar:./libs/slf4j-api-1.7.25.jar:./libs/slf4j-nop-1.7.25.jar:./libs/jopt-simple-5.0.4.jar:./libs/zookeeper-3.4.13.jar:./libs/metrics-core-2.2.0.jar:./libs/jackson-core-2.9.8.jar:./libs/jackson-databind-2.9.8.jar:./libs/jackson-annotations-2.9.8.jar:./libs/zkclient-0.11.jar:./libs/log4j-1.2.17.jar:./libs/lz4-java-1.5.0.jar:./libs/quarkus-kafka-client-0.16.1.jar \
   kafka.admin.TopicCommand
 
