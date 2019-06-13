@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-topic-create
+spec:
+  template:
+    spec:
+      containers:
+      - name: topic-create
+        image: temp
+        imagePullPolicy: Never
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: PARTITIONS
+          value: "3"
+        - name: REPLICATION_FACTOR
+          value: "1"
+        args:
+        - kafka.admin.TopicCommand
+        - --zookeeper
+        -   zookeeper.kafka.svc.cluster.local:2181
+        - --create
+        - --if-not-exists
+        #- --bootstrap-server
+        #-   bootstrap.kafka:9092
+        #- --create
+        - --topic
+        -   test-topic-create-$(POD_NAME)
+        - --partitions
+        -   $(PARTITIONS)
+        - --replication-factor
+        -   $(REPLICATION_FACTOR)
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+      restartPolicy: Never
