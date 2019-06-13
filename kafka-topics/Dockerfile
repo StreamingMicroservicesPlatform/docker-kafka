@@ -5,6 +5,7 @@ FROM solsson/curl@sha256:92ebf15ac57bea360484480336ed5d9fa16d38d773fd00f7e9fb2ca
 
 RUN curl -o /slf4j-simple-1.7.25.jar http://central.maven.org/maven2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25.jar
 RUN curl -o /slf4j-nop-1.7.25.jar http://central.maven.org/maven2/org/slf4j/slf4j-nop/1.7.25/slf4j-nop-1.7.25.jar
+RUN curl -o /quarkus-kafka-client-0.16.1.jar http://central.maven.org/maven2/io/quarkus/quarkus-kafka-client/0.16.1/quarkus-kafka-client-0.16.1.jar
 
 FROM solsson/kafka@sha256:9f1f0e769cd10e0503bc5649f9fcb0fc2c28aaf8e3b9b30ef2e6da67655bb3f6 as dist
 
@@ -29,6 +30,8 @@ COPY --from=dist /opt/kafka .
 # Failed to verify that a reflection config file makes any difference though
 COPY reflection.json .
 
+COPY --from=slf4j-impl /quarkus-kafka-client-0.16.1.jar ./libs/quarkus-kafka-client-0.16.1.jar
+
 RUN  cd /opt/kafka && native-image \
   --no-server \
   --static \
@@ -37,8 +40,10 @@ RUN  cd /opt/kafka && native-image \
   --report-unsupported-elements-at-runtime \
   -H:+ReportExceptionStackTraces \
   #--no-fallback \
-  -cp ./libs/kafka_2.12-2.2.1.jar:./libs/kafka-clients-2.2.1.jar:./libs/scala-library-2.12.8.jar:./libs/scala-logging_2.12-3.9.0.jar:./libs/slf4j-api-1.7.25.jar:./libs/slf4j-nop-1.7.25.jar:./libs/jopt-simple-5.0.4.jar:./libs/zookeeper-3.4.13.jar:./libs/metrics-core-2.2.0.jar:./libs/jackson-core-2.9.8.jar:./libs/jackson-databind-2.9.8.jar:./libs/jackson-annotations-2.9.8.jar:./libs/zkclient-0.11.jar:./libs/log4j-1.2.17.jar:./libs/lz4-java-1.5.0.jar \
+  -cp ./libs/kafka_2.12-2.2.1.jar:./libs/kafka-clients-2.2.1.jar:./libs/scala-library-2.12.8.jar:./libs/scala-logging_2.12-3.9.0.jar:./libs/slf4j-api-1.7.25.jar:./libs/slf4j-nop-1.7.25.jar:./libs/jopt-simple-5.0.4.jar:./libs/zookeeper-3.4.13.jar:./libs/metrics-core-2.2.0.jar:./libs/jackson-core-2.9.8.jar:./libs/jackson-databind-2.9.8.jar:./libs/jackson-annotations-2.9.8.jar:./libs/zkclient-0.11.jar:./libs/log4j-1.2.17.jar:./libs/lz4-java-1.5.0.jar:./libs/quarkus-kafka-client-0.16.1.jar \
   kafka.admin.TopicCommand
+
+RUN ./kafka-topics
 
 FROM busybox@sha256:c888d69b73b5b444c2b0bd70da28c3da102b0aeb327f3a297626e2558def327f
 
