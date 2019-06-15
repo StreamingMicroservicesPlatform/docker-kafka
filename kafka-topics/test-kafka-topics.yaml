@@ -1,0 +1,119 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-kafka-topics
+spec:
+  template:
+    metadata:
+      annotations:
+        test-subject: github.com/solsson/dockerfiles/pull/25
+        kafka-bootstrap: bootstrap.kafka:9092
+        admin-zookeeper: zookeeper.kafka.svc.cluster.local:2181
+    spec:
+      containers:
+      - name: list
+        # https://microk8s.io/docs/working#working-with-microk8s-registry-add-on
+        image: localhost:32000/solsson/kafka-topics
+        env:
+        - name: BOOTSTRAP
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['kafka-bootstrap']
+        args:
+        - --bootstrap-server
+        -   $(BOOTSTRAP)
+        - --list
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+      # Currently fails with:
+      # Exception in thread "main" org.apache.kafka.common.KafkaException: Exception while loading Zookeeper JAAS login context 'Client'
+      #   at org.apache.kafka.common.security.JaasUtils.isZkSecurityEnabled(JaasUtils.java:45)
+      #   at kafka.admin.TopicCommand$ZookeeperTopicService$.apply(TopicCommand.scala:262)
+      #   at kafka.admin.TopicCommand$.main(TopicCommand.scala:53)
+      #   at kafka.admin.TopicCommand.main(TopicCommand.scala)
+      # Caused by: java.lang.ClassNotFoundException: sun.security.provider.ConfigFile
+      #   at com.oracle.svm.core.hub.ClassForNameSupport.forName(ClassForNameSupport.java:51)
+      #   at java.lang.Class.forName(DynamicHub.java:1143)
+      #   at javax.security.auth.login.Configuration$2.run(Configuration.java:251)
+      #   at javax.security.auth.login.Configuration$2.run(Configuration.java:247)
+      #   at java.security.AccessController.doPrivileged(AccessController.java:83)
+      #   at javax.security.auth.login.Configuration.getConfiguration(Configuration.java:246)
+      #   at org.apache.kafka.common.security.JaasUtils.isZkSecurityEnabled(JaasUtils.java:42)
+      #   ... 3 more
+      #- name: list-zk
+      #  image: localhost:32000/solsson/kafka-topics
+      #  env:
+      #  - name: ZOOKEEPER
+      #    valueFrom:
+      #      fieldRef:
+      #        fieldPath: metadata.annotations['admin-zookeeper']
+      #  args:
+      #  # unlike --bootstrap-servers, --zookeeper supporots --create --if-not-exists
+      #  - --zookeeper
+      #  -   $(ZOOKEEPER)
+      #  - --list
+      #  resources:
+      #    limits:
+      #      cpu: 20m
+      #      memory: 30Mi
+      - name: script
+        image: localhost:32000/solsson/kafka-topics
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: BOOTSTRAP
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['kafka-bootstrap']
+        - name: ZOOKEEPER
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['admin-zookeeper']
+        - name: PARTITIONS
+          value: "3"
+        - name: REPLICATION_FACTOR
+          value: "1"
+        command:
+        - /bin/bash
+        - -cex
+        - |
+          echo "List:"
+          kafka-topics \
+            --bootstrap-server $(BOOTSTRAP) \
+            --list
+          TESTTOPIC=kafka-topics-test-$(POD_NAME)
+          echo "Creating $TESTTOPIC ..."
+          kafka-topics \
+            --bootstrap-server $(BOOTSTRAP) \
+            --create \
+            --topic $TESTTOPIC \
+            --replication-factor $(REPLICATION_FACTOR) \
+            --partitions $(PARTITIONS)
+          echo "List:"
+          kafka-topics \
+            --bootstrap-server $(BOOTSTRAP) \
+            --list
+          echo "Describe:"
+          kafka-topics \
+            --bootstrap-server $(BOOTSTRAP) \
+            --describe \
+            --topic $TESTTOPIC
+          echo "Delete:"
+          kafka-topics \
+            --bootstrap-server $(BOOTSTRAP) \
+            --delete \
+            --topic $TESTTOPIC
+          echo "List:"
+          kafka-topics \
+            --bootstrap-server $(BOOTSTRAP) \
+            --list
+          echo "Test completed."
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+      restartPolicy: Never

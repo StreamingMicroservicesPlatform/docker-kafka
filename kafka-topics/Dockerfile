@@ -7,7 +7,7 @@ RUN curl -o /slf4j-simple-1.7.25.jar http://central.maven.org/maven2/org/slf4j/s
 RUN curl -o /slf4j-nop-1.7.25.jar http://central.maven.org/maven2/org/slf4j/slf4j-nop/1.7.25/slf4j-nop-1.7.25.jar
 RUN curl -o /quarkus-kafka-client-0.16.1.jar http://central.maven.org/maven2/io/quarkus/quarkus-kafka-client/0.16.1/quarkus-kafka-client-0.16.1.jar
 
-FROM solsson/jar-jopt-simple:5.0.4-reflectless as jopt-simple-jar
+FROM solsson/jar-jopt-simple:5.0.4-reflectless@sha256:703496c5b5bae98d72b2afb58a5de1d74ea6a2a41a09b10c2cf1cef09a78c049 as jopt-simple-jar
 
 FROM solsson/kafka@sha256:9f1f0e769cd10e0503bc5649f9fcb0fc2c28aaf8e3b9b30ef2e6da67655bb3f6 as dist
 
@@ -35,9 +35,9 @@ COPY reflection.json .
 COPY --from=slf4j-impl /quarkus-kafka-client-0.16.1.jar ./libs/quarkus-kafka-client-0.16.1.jar
 COPY --from=jopt-simple-jar /jopt-simple-5.0.4.jar ./libs/jopt-simple-5.0.4.jar
 
-RUN  cd /opt/kafka && native-image \
+RUN native-image \
   --no-server \
-  --static \
+  #--static \
   -H:Name=kafka-topics \
   --report-unsupported-elements-at-runtime \
   -H:+ReportExceptionStackTraces \
@@ -50,14 +50,10 @@ RUN  cd /opt/kafka && native-image \
 
 RUN ./kafka-topics --help 2>&1 | grep REQUIRED
 
-FROM busybox@sha256:c888d69b73b5b444c2b0bd70da28c3da102b0aeb327f3a297626e2558def327f
+ENTRYPOINT [ "./kafka-topics" ]
 
-COPY --from=native-build /opt/kafka/kafka-topics /usr/local/bin/kafka-topics
-
-ENTRYPOINT [ "kafka-topics" ]
-
-# https://github.com/quarkusio/quarkus/blob/master/devtools/common/src/main/resources/templates/dockerfile-native.ftl
-FROM registry.access.redhat.com/ubi8/ubi-minimal@sha256:7b7a9336b681f779b239141db4fd27fed9a7cc50e7ef7a727fc9490559b4e1df
+# same base as graalvm-ce
+FROM oraclelinux:7-slim@sha256:0de5413fba176b3b03a7aaa3c9bd1583371ad88314b29927327ff97d5a94e7f7
 
 COPY --from=native-build /opt/kafka/kafka-topics /usr/local/bin/kafka-topics
 
