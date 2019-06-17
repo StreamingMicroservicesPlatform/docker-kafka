@@ -2,18 +2,20 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: test-kafka-topics
+  annotations:
+    test-image: &image solsson/kafka-topics@sha256:bfe86a87aa67b583c7b2596156dff67dc77f16b0acba6a3d2830243b0cb920f6
+    test-change: github.com/solsson/dockerfiles/pull/25
 spec:
   template:
     metadata:
       annotations:
-        test-subject: github.com/solsson/dockerfiles/pull/25
         kafka-bootstrap: bootstrap.kafka:9092
         admin-zookeeper: zookeeper.kafka.svc.cluster.local:2181
     spec:
       containers:
       - name: list
         # https://microk8s.io/docs/working#working-with-microk8s-registry-add-on
-        image: localhost:32000/solsson/kafka-topics
+        image: *image
         env:
         - name: BOOTSTRAP
           valueFrom:
@@ -43,7 +45,7 @@ spec:
       #   at org.apache.kafka.common.security.JaasUtils.isZkSecurityEnabled(JaasUtils.java:42)
       #   ... 3 more
       #- name: list-zk
-      #  image: localhost:32000/solsson/kafka-topics
+      #  image: *image
       #  env:
       #  - name: ZOOKEEPER
       #    valueFrom:
@@ -59,7 +61,7 @@ spec:
       #      cpu: 20m
       #      memory: 30Mi
       - name: script
-        image: localhost:32000/solsson/kafka-topics
+        image: *image
         env:
         - name: POD_NAME
           valueFrom:
