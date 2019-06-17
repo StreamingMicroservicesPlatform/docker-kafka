@@ -1,11 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: test-kafka-topics
+  generateName: test-kafka-topics-
   annotations:
     test-image: &image solsson/kafka-topics@sha256:bfe86a87aa67b583c7b2596156dff67dc77f16b0acba6a3d2830243b0cb920f6
     test-change: github.com/solsson/dockerfiles/pull/25
 spec:
+  backoffLimit: 0
   template:
     metadata:
       annotations:
