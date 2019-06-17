@@ -15,6 +15,9 @@
   },
   {
     "name": "sun.security.provider.ConfigFile",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ],
     "allDeclaredFields": true,
     "allPublicFields": true,
     "allDeclaredMethods": true,
