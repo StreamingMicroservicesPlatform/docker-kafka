@@ -25,6 +25,9 @@
   },
   {
     "name": "org.apache.zookeeper.ClientCnxnSocketNIO",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ],
     "allDeclaredFields": true,
     "allPublicFields": true,
     "allDeclaredMethods": true,
