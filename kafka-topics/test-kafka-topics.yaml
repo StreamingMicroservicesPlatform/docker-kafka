@@ -3,7 +3,7 @@ kind: Job
 metadata:
   generateName: test-kafka-topics-
   annotations:
-    test-image: &image solsson/kafka-topics@sha256:7b513c7ccb5c79332eeeb68431b1e981f06863202285a8f64b0d9f0f6a476e4c
+    test-image: &image solsson/kafka-topics@sha256:ede9db7736bb60d4705fdab3209e86a4123f05a48174fa868ba64b20bf6a8bf7
     test-change: github.com/solsson/dockerfiles/pull/25
 spec:
   backoffLimit: 0
@@ -11,7 +11,7 @@ spec:
     metadata:
       annotations:
         kafka-bootstrap: bootstrap.kafka:9092
-        admin-zookeeper: zookeeper.kafka.svc.cluster.local:2181
+        admin-zookeeper: zookeeper.kafka:2181
     spec:
       containers:
       - name: list
@@ -100,6 +100,13 @@ spec:
           kafka-topics \
             --bootstrap-server $(BOOTSTRAP) \
             --list
+          echo "Configure:"
+          kafka-topics \
+            --zookeeper $(ZOOKEEPER) \
+            --alter \
+            --topic $TESTTOPIC \
+            --partitions $(PARTITIONS) \
+            --config max.message.bytes=8192;
           echo "Describe:"
           kafka-topics \
             --bootstrap-server $(BOOTSTRAP) \
