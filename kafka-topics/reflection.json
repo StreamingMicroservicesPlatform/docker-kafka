@@ -1,36 +1,20 @@
 [
   {
-    "name": "org.slf4j.impl.StaticLoggerBinder",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "name": "org.slf4j.impl.StaticLoggerBinder"
   },
   {
-    "name": "com.fasterxml.jackson.databind.ObjectMapper",
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "name": "com.fasterxml.jackson.databind.ObjectMapper"
   },
   {
     "name": "sun.security.provider.ConfigFile",
     "methods": [
       { "name": "<init>", "parameterTypes": [] }
-    ],
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    ]
   },
   {
     "name": "org.apache.zookeeper.ClientCnxnSocketNIO",
     "methods": [
       { "name": "<init>", "parameterTypes": ["org.apache.zookeeper.client.ZKClientConfig"] }
-    ],
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    ]
   }
 ]
