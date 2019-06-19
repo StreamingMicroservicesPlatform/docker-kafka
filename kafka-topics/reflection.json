@@ -14,7 +14,7 @@
   {
     "name": "org.apache.zookeeper.ClientCnxnSocketNIO",
     "methods": [
-      { "name": "<init>", "parameterTypes": ["org.apache.zookeeper.client.ZKClientConfig"] }
+      { "name": "<init>" }
     ]
   }
 ]
