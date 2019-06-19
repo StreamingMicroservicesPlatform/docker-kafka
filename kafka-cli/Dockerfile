@@ -9,7 +9,7 @@ RUN curl -o /slf4j-nop-1.7.25.jar http://central.maven.org/maven2/org/slf4j/slf4
 RUN curl -o /quarkus-kafka-client-0.16.1.jar http://central.maven.org/maven2/io/quarkus/quarkus-kafka-client/0.16.1/quarkus-kafka-client-0.16.1.jar
 
 # Built with a patch that eliminates some reflection: https://github.com/jopt-simple/jopt-simple/compare/jopt-simple-5.0.4...solsson:reflection-avoidance
-FROM solsson/jar-jopt-simple:5.0.4-reflectless@sha256:d9b7564d6af17623aa2809622c8bb1d4b8666eded3e5c4e75ff69caf6733632e as jopt-simple-jar
+FROM solsson/jar-jopt-simple:5.0.4-reflectless@sha256:39a9249826192b3e9a290028da151e81fdccb3e4308fda3b7403fb6a6d9b9f78 as jopt-simple-jar
 
 FROM solsson/kafka@sha256:9f1f0e769cd10e0503bc5649f9fcb0fc2c28aaf8e3b9b30ef2e6da67655bb3f6 as dist
 
