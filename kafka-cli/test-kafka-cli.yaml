@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: test-kafka-topics-
+  generateName: test-kafka-cli-
   annotations:
-    test-image: &image solsson/kafka-topics@sha256:e4446b57db6238267c86f98e8b0e2a0a33b10587d9ec521a7dfa259f046c271c
+    test-image: &image solsson/kafka-cli:latest
     test-change: github.com/solsson/dockerfiles/pull/25
 spec:
   backoffLimit: 0
@@ -88,7 +88,7 @@ spec:
           kafka-topics \
             --bootstrap-server $(BOOTSTRAP) \
             --list
-          TESTTOPIC=kafka-topics-test-$(POD_NAME)
+          TESTTOPIC=kafka-cli-test-$(POD_NAME)
           echo "Creating $TESTTOPIC ..."
           kafka-topics \
             --bootstrap-server $(BOOTSTRAP) \
@@ -106,7 +106,14 @@ spec:
             --alter \
             --topic $TESTTOPIC \
             --partitions $(PARTITIONS) \
-            --config max.message.bytes=8192;
+            --config max.message.bytes=4096;
+          echo "Configure, not the deprecated way:"
+          kafka-configs \
+            --zookeeper $(ZOOKEEPER) \
+            --entity-type=topics \
+            --entity-name $TESTTOPIC \
+            --alter \
+            --add-config max.message.bytes=8192;
           echo "Describe:"
           kafka-topics \
             --bootstrap-server $(BOOTSTRAP) \
