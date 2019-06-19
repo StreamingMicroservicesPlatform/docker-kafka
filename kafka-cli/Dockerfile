@@ -89,4 +89,10 @@ COPY --from=native-build /opt/kafka/kafka-configs /usr/local/bin/kafka-configs
 COPY --from=native-build /opt/kafka/kafka-topics /usr/local/bin/kafka-topics
 COPY --from=native-build /opt/kafka/kafka-consumer-groups /usr/local/bin/kafka-consumer-groups
 
+# Compatibility with scripts written for the solsson/kafka image
+RUN mkdir -p /opt/kafka/bin && \
+  cd /opt/kafka && \
+  for bin in /usr/local/bin/*; do ln -s $bin ./bin/$(basename $bin).sh; done
+WORKDIR /opt/kafka
+
 ENTRYPOINT [ "kafka-configs" ]
