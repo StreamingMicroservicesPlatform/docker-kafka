@@ -3,7 +3,7 @@ kind: Job
 metadata:
   generateName: test-kafka-topics-
   annotations:
-    test-image: &image solsson/kafka-topics@sha256:ede9db7736bb60d4705fdab3209e86a4123f05a48174fa868ba64b20bf6a8bf7
+    test-image: &image solsson/kafka-topics@sha256:e4446b57db6238267c86f98e8b0e2a0a33b10587d9ec521a7dfa259f046c271c
     test-change: github.com/solsson/dockerfiles/pull/25
 spec:
   backoffLimit: 0
