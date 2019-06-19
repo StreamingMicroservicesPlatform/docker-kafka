@@ -27,7 +27,7 @@ CMD ["kafka.admin.ConfigCommand"]
 FROM oracle/graalvm-ce:19.0.2@sha256:684ba0e822eb2f569ffef96abb315f5b66550c4e7d5d38ad6570b72f0ce06c35 as native-build
 RUN gu install native-image
 
-RUN yum install snappy libzstd lz4 && yum clean all
+RUN yum -y install snappy libzstd lz4 && yum clean all
 
 ARG classpath=./libs/kafka_2.12-2.2.1.jar:./libs/kafka-clients-2.2.1.jar:./libs/scala-library-2.12.8.jar:./libs/scala-logging_2.12-3.9.0.jar:./libs/slf4j-api-1.7.25.jar:./libs/slf4j-nop-1.7.25.jar:./libs/jopt-simple-5.0.4.jar:./libs/zookeeper-3.4.13.jar:./libs/metrics-core-2.2.0.jar:./libs/jackson-core-2.9.8.jar:./libs/jackson-databind-2.9.8.jar:./libs/jackson-annotations-2.9.8.jar:./libs/zkclient-0.11.jar:./libs/log4j-1.2.17.jar:./libs/lz4-java-1.5.0.jar:./libs/quarkus-kafka-client-0.16.1.jar
 
@@ -82,12 +82,12 @@ RUN native-image \
 
 RUN ./kafka-configs --help 2>&1 | grep '^--'
 RUN ./kafka-topics --help 2>&1 | grep '^--'
-RUN ./kafka-consumer-groups --help 2>&1 | grep '^--'
+#RUN ./kafka-consumer-groups --help 2>&1 | grep '^--'
 
 # same base as graalvm-ce
 FROM oraclelinux:7-slim@sha256:0de5413fba176b3b03a7aaa3c9bd1583371ad88314b29927327ff97d5a94e7f7
 
-RUN yum install snappy libzstd lz4 && yum clean all
+RUN yum -y install snappy libzstd lz4 && yum clean all
 
 COPY --from=native-build /opt/kafka/kafka-configs /usr/local/bin/kafka-configs
 COPY --from=native-build /opt/kafka/kafka-topics /usr/local/bin/kafka-topics
