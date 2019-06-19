@@ -3,7 +3,7 @@ kind: Job
 metadata:
   generateName: test-kafka-cli-
   annotations:
-    test-image: &image solsson/kafka-cli:latest
+    test-image: &image solsson/kafka-cli@sha256:e8dd4d0b9918a660e9ea3d3366515b5d7e4084c32a59500d3f51881a90ec6171
     test-change: github.com/solsson/dockerfiles/pull/25
 spec:
   backoffLimit: 0
@@ -22,6 +22,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['kafka-bootstrap']
+        command:
+        - kafka-topics
         args:
         - --bootstrap-server
         -   $(BOOTSTRAP)
@@ -30,37 +32,6 @@ spec:
           limits:
             cpu: 10m
             memory: 20Mi
-      # Currently fails with:
-      # Exception in thread "main" org.apache.kafka.common.KafkaException: Exception while loading Zookeeper JAAS login context 'Client'
-      #   at org.apache.kafka.common.security.JaasUtils.isZkSecurityEnabled(JaasUtils.java:45)
-      #   at kafka.admin.TopicCommand$ZookeeperTopicService$.apply(TopicCommand.scala:262)
-      #   at kafka.admin.TopicCommand$.main(TopicCommand.scala:53)
-      #   at kafka.admin.TopicCommand.main(TopicCommand.scala)
-      # Caused by: java.lang.ClassNotFoundException: sun.security.provider.ConfigFile
-      #   at com.oracle.svm.core.hub.ClassForNameSupport.forName(ClassForNameSupport.java:51)
-      #   at java.lang.Class.forName(DynamicHub.java:1143)
-      #   at javax.security.auth.login.Configuration$2.run(Configuration.java:251)
-      #   at javax.security.auth.login.Configuration$2.run(Configuration.java:247)
-      #   at java.security.AccessController.doPrivileged(AccessController.java:83)
-      #   at javax.security.auth.login.Configuration.getConfiguration(Configuration.java:246)
-      #   at org.apache.kafka.common.security.JaasUtils.isZkSecurityEnabled(JaasUtils.java:42)
-      #   ... 3 more
-      #- name: list-zk
-      #  image: *image
-      #  env:
-      #  - name: ZOOKEEPER
-      #    valueFrom:
-      #      fieldRef:
-      #        fieldPath: metadata.annotations['admin-zookeeper']
-      #  args:
-      #  # unlike --bootstrap-servers, --zookeeper supporots --create --if-not-exists
-      #  - --zookeeper
-      #  -   $(ZOOKEEPER)
-      #  - --list
-      #  resources:
-      #    limits:
-      #      cpu: 20m
-      #      memory: 30Mi
       - name: script
         image: *image
         env:
@@ -107,6 +78,8 @@ spec:
             --topic $TESTTOPIC \
             --config max.message.bytes=4096;
           echo "Configure, not the deprecated way:"
+          # we can probably fix "Unable to load JDK7 types (annotations, java.nio.file.Path): no Java7 support added" using an entry in reflection.json, if we find any issue with not having those features:
+          # https://github.com/FasterXML/jackson-databind/blob/jackson-databind-2.9.8/src/main/java/com/fasterxml/jackson/databind/ext/Java7Support.java#L24
           kafka-configs \
             --zookeeper $(ZOOKEEPER) \
             --entity-type=topics \
