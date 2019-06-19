@@ -39,10 +39,8 @@ COPY reflection.json .
 COPY --from=maven-jars /quarkus-kafka-client-0.16.1.jar ./libs/quarkus-kafka-client-0.16.1.jar
 COPY --from=jopt-simple-jar /jopt-simple-5.0.4.jar ./libs/jopt-simple-5.0.4.jar
 
-RUN set -e; \
-  \
-  native-image \
-  #--no-server \
+RUN native-image \
+  --no-server \
   #--static \
   --report-unsupported-elements-at-runtime \
   -H:+ReportExceptionStackTraces \
@@ -52,10 +50,10 @@ RUN set -e; \
   -H:ReflectionConfigurationFiles=reflection.json \
   -cp ${classpath} \
   -H:Name=kafka-configs \
-  kafka.admin.ConfigCommand; \
-  \
-  native-image \
-  #--no-server \
+  kafka.admin.ConfigCommand
+
+RUN native-image \
+  --no-server \
   #--static \
   --report-unsupported-elements-at-runtime \
   -H:+ReportExceptionStackTraces \
@@ -65,7 +63,7 @@ RUN set -e; \
   -H:ReflectionConfigurationFiles=reflection.json \
   -cp ${classpath} \
   -H:Name=kafka-topics \
-  kafka.admin.TopicCommand;
+  kafka.admin.TopicCommand
 
 RUN ./kafka-configs --help 2>&1 | grep '^--'
 RUN ./kafka-topics --help 2>&1 | grep '^--'
