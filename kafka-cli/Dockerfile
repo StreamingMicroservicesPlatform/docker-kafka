@@ -65,13 +65,28 @@ RUN native-image \
   -H:Name=kafka-topics \
   kafka.admin.TopicCommand
 
+RUN native-image \
+  --no-server \
+  #--static \
+  --report-unsupported-elements-at-runtime \
+  -H:+ReportExceptionStackTraces \
+  --no-fallback \
+  -H:IncludeResourceBundles=joptsimple.HelpFormatterMessages \
+  -H:IncludeResourceBundles=joptsimple.ExceptionMessages \
+  -H:ReflectionConfigurationFiles=reflection.json \
+  -cp ${classpath} \
+  -H:Name=kafka-consumer-groups \
+  kafka.admin.ConsumerGroupCommand
+
 RUN ./kafka-configs --help 2>&1 | grep '^--'
 RUN ./kafka-topics --help 2>&1 | grep '^--'
+RUN ./kafka-consumer-groups --help 2>&1 | grep '^--'
 
 # same base as graalvm-ce
 FROM oraclelinux:7-slim@sha256:0de5413fba176b3b03a7aaa3c9bd1583371ad88314b29927327ff97d5a94e7f7
 
 COPY --from=native-build /opt/kafka/kafka-configs /usr/local/bin/kafka-configs
 COPY --from=native-build /opt/kafka/kafka-topics /usr/local/bin/kafka-topics
+COPY --from=native-build /opt/kafka/kafka-consumer-groups /usr/local/bin/kafka-consumer-groups
 
 ENTRYPOINT [ "kafka-configs" ]
