@@ -3,7 +3,7 @@ kind: Job
 metadata:
   generateName: test-kafka-cli-
   annotations:
-    test-image: &image solsson/kafka-cli@sha256:229b18716fbcda496dde9d249e2d911b2bd980bb4d309413c80ccdcc0ea4e9a5
+    test-image: &image solsson/kafka-cli@sha256:5513a44007acf7c7545f036d36d3c0aeb3c5c9de77c1816e5b8d6aa45c5d8e23
     test-change: github.com/solsson/dockerfiles/pull/25
 spec:
   backoffLimit: 0
@@ -100,6 +100,21 @@ spec:
           kafka-topics \
             --bootstrap-server $(BOOTSTRAP) \
             --list
+          echo "Consumer groups:"
+          kafka-consumer-groups \
+            --bootstrap-server $(BOOTSTRAP) \
+            --group $TESTTOPIC-group \
+            --topic $TESTTOPIC \
+            --reset-offsets --execute \
+            --to-offset 0
+          kafka-consumer-groups \
+            --bootstrap-server $(BOOTSTRAP) \
+            --group $TESTTOPIC-group \
+            --describe
+          kafka-consumer-groups \
+            --bootstrap-server $(BOOTSTRAP) \
+            --group $TESTTOPIC-group \
+            --delete
           echo "Test completed."
         resources:
           limits:
