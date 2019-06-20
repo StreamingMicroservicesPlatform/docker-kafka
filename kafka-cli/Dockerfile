@@ -82,7 +82,7 @@ RUN native-image \
 
 RUN ./kafka-configs --help 2>&1 | grep '^--'
 RUN ./kafka-topics --help 2>&1 | grep '^--'
-#RUN ./kafka-consumer-groups --help 2>&1 | grep '^--'
+RUN ./kafka-consumer-groups --help 2>&1 | grep '^--'
 
 # same base as graalvm-ce
 FROM oraclelinux:7-slim@sha256:0de5413fba176b3b03a7aaa3c9bd1583371ad88314b29927327ff97d5a94e7f7
