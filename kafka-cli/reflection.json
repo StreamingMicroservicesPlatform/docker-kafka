@@ -16,7 +16,16 @@
     ]
   },
   {
-    "name": "org.apache.kafka.common.serialization.StringDeserializer"
+    "name": "org.apache.kafka.common.serialization.StringDeserializer",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ]
+  },
+  {
+    "name": "org.apache.kafka.common.serialization.StringSerializer",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ]
   },
   {
     "name": "org.apache.zookeeper.ClientCnxnSocketNIO",
