@@ -28,6 +28,12 @@
     ]
   },
   {
+    "name": "org.apache.kafka.clients.consumer.RangeAssignor",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ]
+  },
+  {
     "name": "org.apache.zookeeper.ClientCnxnSocketNIO",
     "methods": [
       { "name": "<init>" }
