@@ -1,6 +1,6 @@
 FROM solsson/jdk-opensource:11.0.2@sha256:9088fd8eff0920f6012e422cdcb67a590b2a6edbeae1ff0ca8e213e0d4260cf8
 
-ENV EXPORTER_VERSION=96d8a72e2bc71575b2fed576a9e8b194ffa9777d
+ENV EXPORTER_VERSION=76cf1bf03c4cd4a050eb089f37af6a8af15abf0a
 ENV EXPORTER_REPO=github.com/prometheus/jmx_exporter
 
 WORKDIR /usr/local/
