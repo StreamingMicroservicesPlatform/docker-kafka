@@ -1,3 +1,2 @@
-FROM oracle/graalvm-ce@sha256:9c683cba2d1b40921509299cdec6f58412d245247fbb2ded38f1a4f3e3563fa5
-RUN gu install native-image
+FROM oraclelinux:7-slim@sha256:344fd9317bc14bc6c78a6734a4bb39d56187a02b4d13ebdc92c3103a26583bbf
 RUN yum -y install snappy libzstd lz4 && yum clean all
