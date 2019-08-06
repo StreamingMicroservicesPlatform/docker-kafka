@@ -1,5 +1,5 @@
 FROM gradle:4.8-jdk8-slim
-ARG VERSION=2.0.48
+ARG VERSION=2.0.59
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates
 RUN git clone -b ${VERSION} https://github.com/linkedin/cruise-control.git
@@ -10,7 +10,7 @@ RUN mv -v /home/gradle/cruise-control/cruise-control/build/libs/cruise-control-$
 RUN mv -v /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter-${VERSION}.jar \
   /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter.jar
 
-FROM node:10.15
+FROM node:10.16
 RUN mkdir /src && cd /src && git clone https://github.com/linkedin/cruise-control-ui.git
 WORKDIR /src/cruise-control-ui
 RUN git checkout dfc257cecb59f1be703ddb0ff3ce8522c9b3685f
