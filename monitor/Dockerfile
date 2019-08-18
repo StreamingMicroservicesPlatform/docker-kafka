@@ -1,4 +1,4 @@
-FROM solsson/jdk-opensource:11.0.1@sha256:740feb6c1ecbdf2beac1dc41405c3215511b90d83a7211f805e88f92946dd2a9
+FROM adoptopenjdk/openjdk11:jdk-11.0.4_11-slim@sha256:79f43f49f505df27528a3dce52e30339116ed6716b1f658206ba76caca26c85b
 
 ENV KAFKA_MONITOR_REPO=https://github.com/linkedin/kafka-monitor \
     KAFKA_MONITOR_VERSION=2.0.0 \

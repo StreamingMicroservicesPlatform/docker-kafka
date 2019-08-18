@@ -1,1 +1,1 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.2.9-slim@sha256:f08341ea88e6dfae4a8ded768941574ead9b6794730f55afb8f54fe4bf7c1366
+FROM adoptopenjdk/openjdk11:jdk-11.0.4_11-slim@sha256:79f43f49f505df27528a3dce52e30339116ed6716b1f658206ba76caca26c85b

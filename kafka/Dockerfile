@@ -1,5 +1,5 @@
 # The only assumption we make about this FROM is that it has a JRE in path
-FROM adoptopenjdk/openjdk11:jre-11.0.3_7@sha256:d0704102dd659b462c5255bc69f6d341caf80e887d89d4204949dd6710c3b29a
+FROM adoptopenjdk/openjdk11:jre-11.0.4_11@sha256:140ba182d696180600a2871a98f67ad0ee2d6a1e48a7c570d1c0e156860c2a9d
 
 ENV KAFKA_VERSION=2.2.1 SCALA_VERSION=2.12
 
