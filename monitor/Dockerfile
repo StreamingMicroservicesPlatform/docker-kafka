@@ -1,7 +1,7 @@
 FROM adoptopenjdk/openjdk11:jdk-11.0.4_11-slim@sha256:79f43f49f505df27528a3dce52e30339116ed6716b1f658206ba76caca26c85b
 
 ENV KAFKA_MONITOR_REPO=https://github.com/linkedin/kafka-monitor \
-    KAFKA_MONITOR_VERSION=2.0.0 \
+    KAFKA_MONITOR_VERSION=2.0.4 \
     KAFKA_MONITOR_SHA256=3713a76a970bd99e72fe8ce1c8be77d4b036057367352265a70ad23b55acef35
 
 RUN set -ex; \
