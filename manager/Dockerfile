@@ -30,7 +30,7 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
-FROM adoptopenjdk/openjdk11:x86_64-ubi-minimal-jre-11.0.5_10@sha256:a9500e338504a26858893dbd3a6e1aa9372593bce25594fc72faa8cb81717280
+FROM adoptopenjdk/openjdk11:x86_64-ubi-minimal-jre-11.0.5_10@sha256:211be858640892f5bd24a17b229420e115c046f624380ca046ec26517c5f51f1
 
 COPY --from=build /opt/kafka-manager /opt/kafka-manager
 

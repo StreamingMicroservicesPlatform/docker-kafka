@@ -18,7 +18,7 @@ RUN npm install
 RUN npm run build
 
 # The container is made to work with github.com/Yolean/kubernetes-kafka, so we try to use a common base
-FROM adoptopenjdk/openjdk11:x86_64-ubi-minimal-jre-11.0.5_10@sha256:a9500e338504a26858893dbd3a6e1aa9372593bce25594fc72faa8cb81717280
+FROM adoptopenjdk/openjdk11:x86_64-ubi-minimal-jre-11.0.5_10@sha256:211be858640892f5bd24a17b229420e115c046f624380ca046ec26517c5f51f1
 ARG SOURCE_REF
 ARG SOURCE_TYPE
 ARG DOCKERFILE_PATH
