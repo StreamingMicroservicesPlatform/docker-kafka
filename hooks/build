@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+docker build -t solsson/kafka -t "$IMAGE_NAME" ./kafka
+
+# Generatoe entrypoints
+docker build -t solsson/kafka-entrypoints ./kafka-entrypoints
+
+function entrypoint_gen {
+  echo "# $@"
+  script=$1; shift
+  name=$(basename $script | sed 's|\.sh$||')
+  dfile=./kafka-entrypoints/$name.Dockerfile
+  image=$(echo -n $IMAGE_NAME | sed "s|:|:$name-|")
+  echo "FROM solsson/kafka" > $dfile
+  echo -n 'ENTRYPOINT ["'  >> $dfile
+  docker run --rm --entrypoint $script solsson/kafka-entrypoints $@ \
+    | sed 's| |", \\\
+  "|g'     >> $dfile
+  echo '"]'                >> $dfile
+  docker build -t $image -f $dfile ./kafka-entrypoints
+}
+
+entrypoint_gen ./bin/kafka-server-start.sh ./config/server.properties
+
+# Entrypoints done
+
+#docker push "$IMAGE_NAME"
