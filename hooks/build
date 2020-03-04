@@ -21,6 +21,7 @@ function entrypoint_gen {
   dfile=./kafka-entrypoints/$name.Dockerfile
   image=$(echo -n $IMAGE_NAME | sed "s|:|:$name-|")
   echo "FROM solsson/kafka:nonroot" > $dfile
+  # TODO ideally we'd have only [executable, -cp, long classpath string] in entrypoint and the rest as CMD
   echo -n 'ENTRYPOINT ["'  >> $dfile
   docker run --rm --entrypoint $script $entrypoints $@ \
     | sed 's| |", \\\
@@ -32,6 +33,12 @@ function entrypoint_gen {
 
 entrypoint_gen ./bin/kafka-server-start.sh ./config/server.properties
 entrypoint_gen ./bin/zookeeper-server-start.sh ./cofig/zookeeper.properties
+entrypoint_gen ./bin/kafka-configs.sh
+entrypoint_gen ./bin/kafka-topics.sh
+entrypoint_gen ./bin/kafka-consumer-groups.sh
+entrypoint_gen ./bin/kafka-reassign-partitions.sh
+entrypoint_gen ./bin/kafka-leader-election.sh
+
 # Entrypoints done
 
 [ -z "$NOPUSH" ] || exit 0
