@@ -4,4 +4,4 @@ USER root
 
 RUN sed -i 's|  exec |  echo -n |' ./bin/kafka-run-class.sh
 
-USER nonroot:nonroot
+USER nonroot:nogroup

@@ -1,5 +1,7 @@
 FROM solsson/kafka
 
-RUN groupadd -g 65532 nonroot && \
-  useradd --create-home --home-dir /home/nonroot --uid 65532 --gid 65532 -c nonroot -s /usr/sbin/nologin nonroot
-USER nonroot:nonroot
+RUN mkdir logs && chgrp nogroup logs && chmod g+w logs
+
+# Note that there's also a nouser 65534 user which has no writable home
+RUN useradd --create-home --home-dir /home/nonroot --uid 65532 --gid 65534 -c nonroot -s /usr/sbin/nologin nonroot
+USER nonroot:nogroup

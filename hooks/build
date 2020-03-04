@@ -11,7 +11,8 @@ docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot
 PUSH="$PUSH $nonroot"
 
 # Generatoe entrypoints
-docker build -t solsson/kafka-entrypoints ./kafka-entrypoints
+entrypoints=$(echo -n $IMAGE_NAME | sed "s|:|:entrypoints-|")
+docker build -t $entrypoints ./kafka-entrypoints
 
 function entrypoint_gen {
   echo "# $@"
@@ -19,9 +20,9 @@ function entrypoint_gen {
   name=$(basename $script | sed 's|\.sh$||')
   dfile=./kafka-entrypoints/$name.Dockerfile
   image=$(echo -n $IMAGE_NAME | sed "s|:|:$name-|")
-  echo "FROM solsson/kafka" > $dfile
+  echo "FROM solsson/kafka:nonroot" > $dfile
   echo -n 'ENTRYPOINT ["'  >> $dfile
-  docker run --rm --entrypoint $script solsson/kafka-entrypoints $@ \
+  docker run --rm --entrypoint $script $entrypoints $@ \
     | sed 's| |", \\\
   "|g'     >> $dfile
   echo '"]'                >> $dfile
@@ -33,4 +34,5 @@ entrypoint_gen ./bin/kafka-server-start.sh ./config/server.properties
 entrypoint_gen ./bin/zookeeper-server-start.sh ./cofig/zookeeper.properties
 # Entrypoints done
 
+[ -z "$NOPUSH" ] || exit 0
 for P in $PUSH; do docker push $P; done
