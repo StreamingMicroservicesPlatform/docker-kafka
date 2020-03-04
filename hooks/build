@@ -31,8 +31,8 @@ function entrypoint_gen {
   PUSH="$PUSH $image"
 }
 
-entrypoint_gen ./bin/kafka-server-start.sh ./config/server.properties
-entrypoint_gen ./bin/zookeeper-server-start.sh ./cofig/zookeeper.properties
+entrypoint_gen ./bin/kafka-server-start.sh /etc/kafka/server.properties
+entrypoint_gen ./bin/zookeeper-server-start.sh /etc/kafka/zookeeper.properties
 entrypoint_gen ./bin/kafka-configs.sh
 entrypoint_gen ./bin/kafka-topics.sh
 entrypoint_gen ./bin/kafka-consumer-groups.sh
