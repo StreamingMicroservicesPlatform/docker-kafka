@@ -25,8 +25,11 @@ function entrypoint_gen {
   # TODO ideally we'd have only [executable, -cp, long classpath string] in entrypoint and the rest as CMD
   echo -n 'ENTRYPOINT ["'  >> $dfile
   docker run --rm --entrypoint $script $entrypoints $@ \
-    | sed 's| |", \\\
-  "|g'     >> $dfile
+    | sed 's| |" \\\
+  , "|g' \
+    | sed 's|^  , "/etc/kafka|  ]" \
+  CMD ["/etc/kafka|g' \
+    >> $dfile
   echo '"]'                >> $dfile
   docker build -t $image -f $dfile ./kafka-entrypoints
   PUSH="$PUSH $image"
