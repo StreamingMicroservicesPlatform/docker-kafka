@@ -29,6 +29,7 @@ function entrypoint_gen {
   , "|g' \
     | sed 's|^  , "/etc/kafka|  ]" \
   CMD ["/etc/kafka|g' \
+    | sed 's|, "-Xlog:gc|#, "-Xlog:gc|g' \
     >> $dfile
   echo '"]'                >> $dfile
   docker build -t $image -f $dfile ./kafka-entrypoints
