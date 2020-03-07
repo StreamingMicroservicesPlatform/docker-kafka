@@ -5,10 +5,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends git ca-certific
 RUN git clone -b ${VERSION} https://github.com/linkedin/cruise-control.git
 RUN cd cruise-control && ./gradlew jar copyDependantLibs
 
-RUN mv -v /home/gradle/cruise-control/cruise-control/build/libs/cruise-control-*.jar \
-  /home/gradle/cruise-control/cruise-control/build/libs/cruise-control.jar
-RUN mv -v /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter-*.jar \
-  /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter.jar
+RUN mv -v /cruise-control/cruise-control/build/libs/cruise-control-*.jar \
+  /cruise-control/cruise-control/build/libs/cruise-control.jar
+RUN mv -v /cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter-*.jar \
+  /cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter.jar
 
 FROM node:10.16
 RUN mkdir /src && cd /src && git clone https://github.com/linkedin/cruise-control-ui.git
@@ -28,10 +28,10 @@ ARG DOCKERFILE_PATH
 ARG VERSION
 
 RUN mkdir -p /opt/cruise-control /opt/cruise-control/cruise-control-ui
-COPY --from=0 /home/gradle/cruise-control/cruise-control/build/libs/cruise-control.jar /opt/cruise-control/cruise-control/build/libs/cruise-control.jar
-COPY --from=0 /home/gradle/cruise-control/config /opt/cruise-control/config
-COPY --from=0 /home/gradle/cruise-control/kafka-cruise-control-start.sh /opt/cruise-control/
-COPY --from=0 /home/gradle/cruise-control/cruise-control/build/dependant-libs /opt/cruise-control/cruise-control/build/dependant-libs
+COPY --from=0 /cruise-control/cruise-control/build/libs/cruise-control.jar /opt/cruise-control/cruise-control/build/libs/cruise-control.jar
+COPY --from=0 /cruise-control/config /opt/cruise-control/config
+COPY --from=0 /cruise-control/kafka-cruise-control-start.sh /opt/cruise-control/
+COPY --from=0 /cruise-control/cruise-control/build/dependant-libs /opt/cruise-control/cruise-control/build/dependant-libs
 COPY opt/cruise-control /opt/cruise-control/
 COPY --from=1 /src/cruise-control-ui/dist /opt/cruise-control/cruise-control-ui/dist
 RUN echo "local,localhost,/kafkacruisecontrol" > /opt/cruise-control/cruise-control-ui/dist/static/config.csv
