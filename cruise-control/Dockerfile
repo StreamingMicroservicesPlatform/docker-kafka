@@ -1,24 +1,27 @@
-FROM gradle:4.8-jdk8-slim
-ARG VERSION=2.0.61
+FROM adoptopenjdk/openjdk11:jdk-11.0.6_10-slim
+ARG VERSION=2.0.95
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates
 RUN git clone -b ${VERSION} https://github.com/linkedin/cruise-control.git
-RUN cd cruise-control && gradle jar copyDependantLibs
+RUN cd cruise-control && ./gradlew jar copyDependantLibs
 
-RUN mv -v /home/gradle/cruise-control/cruise-control/build/libs/cruise-control-${VERSION}.jar \
+RUN mv -v /home/gradle/cruise-control/cruise-control/build/libs/cruise-control-*.jar \
   /home/gradle/cruise-control/cruise-control/build/libs/cruise-control.jar
-RUN mv -v /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter-${VERSION}.jar \
+RUN mv -v /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter-*.jar \
   /home/gradle/cruise-control/cruise-control/build/dependant-libs/cruise-control-metrics-reporter.jar
 
 FROM node:10.16
 RUN mkdir /src && cd /src && git clone https://github.com/linkedin/cruise-control-ui.git
 WORKDIR /src/cruise-control-ui
-RUN git checkout dfc257cecb59f1be703ddb0ff3ce8522c9b3685f
+RUN git fetch origin
+RUN git checkout master
+RUN git pull
+RUN git rev-parse HEAD
 RUN npm install
 RUN npm run build
 
 # The container is made to work with github.com/Yolean/kubernetes-kafka, so we try to use a common base
-FROM adoptopenjdk/openjdk11:jdk-11.0.5_10-slim@sha256:3331aafeb25e66ab2ca213b0a1dd863fc5f6eb0160ec9c9145028ebe3db334fe
+FROM adoptopenjdk/openjdk11:jdk-11.0.6_10-slim@sha256:3331aafeb25e66ab2ca213b0a1dd863fc5f6eb0160ec9c9145028ebe3db334fe
 ARG SOURCE_REF
 ARG SOURCE_TYPE
 ARG DOCKERFILE_PATH
