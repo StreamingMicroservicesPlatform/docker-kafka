@@ -4,8 +4,16 @@ set -e
 
 PUSH=""
 
+jre=$(echo -n $IMAGE_NAME | sed "s|:|:jre-|")
+docker build -t solsson/kafka:jre -t "$jre" ./
+PUSH="$PUSH $jre"
+
 docker build -t solsson/kafka -t "$IMAGE_NAME" ./kafka
 PUSH="$PUSH $IMAGE_NAME"
+
+graalvm=$(echo -n $IMAGE_NAME | sed "s|:|:graalvm-|")
+docker build -t solsson/kafka:graalvm -t "$graalvm" ./jdk-adoptopenjdk-graalvm
+PUSH="$PUSH $graalvm"
 
 nonroot=$(echo -n $IMAGE_NAME | sed "s|:|:nonroot-|")
 docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot

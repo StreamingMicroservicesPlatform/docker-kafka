@@ -1,1 +1,1 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.5_10-slim@sha256:3331aafeb25e66ab2ca213b0a1dd863fc5f6eb0160ec9c9145028ebe3db334fe
+FROM adoptopenjdk:11.0.6_10-jdk-hotspot@sha256:4be6d6e43ffb3ebac9ef4f4c2ea61e374690dd8ac39014bc7ca84c3ae2f26b6e

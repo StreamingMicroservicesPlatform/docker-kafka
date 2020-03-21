@@ -1,12 +1,12 @@
 # The only assumption we make about this FROM is that it has a JRE in path
-FROM adoptopenjdk/openjdk11:jdk-11.0.6_10-slim@sha256:4beedbce74fe1f97772e4bc2be2a4631fb1ed7a7b98ff1c3c22c137e003d30cc
+FROM adoptopenjdk:11.0.6_10-jre-hotspot@sha256:08bc4a40504521d019c1497080a958f3377c1b4ffa023d0aaf0b1d74eecfa3d5
 
 ENV KAFKA_VERSION=2.4.1 SCALA_VERSION=2.12
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
-  runDeps='netcat-openbsd'; \
-  buildDeps='curl ca-certificates gnupg dirmngr'; \
+  runDeps='ca-certificates netcat-openbsd'; \
+  buildDeps='curl gnupg dirmngr'; \
   apt-get update && apt-get install -y $runDeps $buildDeps --no-install-recommends; \
   \
   curl -sLS -o KEYS https://www.apache.org/dist/kafka/KEYS; \
@@ -23,8 +23,8 @@ RUN set -ex; \
   rm -rf /opt/kafka/site-docs; \
   \
   apt-get purge -y --auto-remove $buildDeps; \
-  rm -rf /var/lib/apt/lists/*; \
-  rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt /etc/ssl/certs /root/.gnupg
+  rm -rf /var/lib/apt/lists; \
+  rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt /root/.gnupg
 
 WORKDIR /opt/kafka
 
