@@ -12,15 +12,16 @@ RUN set -ex; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt /root/.gnupg
 
 ENV GRAALVM_VERSION=20.0.0
+ENV GRAALVM_VARIANT=java8
 
 RUN set -ex; \
   cd /opt; \
-  curl -sLS -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java11-linux-amd64-${GRAALVM_VERSION}.tar.gz; \
+  curl -sLS -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-${GRAALVM_VARIANT}-linux-amd64-${GRAALVM_VERSION}.tar.gz; \
   tar xvzf graalvm.tar.gz; \
-  mv graalvm-ce-java11-${GRAALVM_VERSION} graalvm; \
+  mv graalvm-ce-${GRAALVM_VARIANT}-${GRAALVM_VERSION} graalvm; \
   rm graalvm.tar.gz
 
-ENV PATH=/opt/java/openjdk/bin:/opt/graalvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/graalvm/bin
 
 RUN gu install native-image
 
