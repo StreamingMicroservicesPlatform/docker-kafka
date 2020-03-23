@@ -4,23 +4,33 @@ set -e
 
 PUSH=""
 
-jre=$(echo -n $IMAGE_NAME | sed "s|:|:jre-|")
+[ -z "$IMAGE_NAME" ] && echo "IMAGE_NAME is required" && exit 1;
+function imagename {
+  buildname=$1
+  case $IMAGE_NAME in
+    *:latest) echo -n $IMAGE_NAME | sed "s|:latest|:$buildname|" ;;
+    *:*) echo -n $IMAGE_NAME | sed "s|:\(.*\)|:\1-$buildname|" ;;
+    *) echo $IMAGE_NAME:$buildname ;;
+  esac
+}
+
+jre=$(imagename jre)
 docker build -t solsson/kafka:jre -t "$jre" ./
 PUSH="$PUSH $jre"
 
 docker build -t solsson/kafka -t "$IMAGE_NAME" ./kafka
 PUSH="$PUSH $IMAGE_NAME"
 
-graalvm=$(echo -n $IMAGE_NAME | sed "s|:|:graalvm-|")
+graalvm=$(imagename graalvm)
 docker build -t solsson/kafka:graalvm -t "$graalvm" ./jdk-adoptopenjdk-graalvm
 PUSH="$PUSH $graalvm"
 
-nonroot=$(echo -n $IMAGE_NAME | sed "s|:|:nonroot-|")
+nonroot=$(imagename nonroot)
 docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot
 PUSH="$PUSH $nonroot"
 
 # Generatoe entrypoints
-entrypoints=$(echo -n $IMAGE_NAME | sed "s|:|:entrypoints-|")
+entrypoints=$(imagename entrypoints)
 docker build -t $entrypoints ./kafka-entrypoints
 
 function entrypoint_gen {
@@ -28,7 +38,7 @@ function entrypoint_gen {
   script=$1; shift
   name=$(basename $script | sed 's|\.sh$||')
   dfile=./kafka-entrypoints/$name.Dockerfile
-  image=$(echo -n $IMAGE_NAME | sed "s|:|:$name-|")
+  image=$(imagename $name)
   echo "FROM solsson/kafka:nonroot" > $dfile
   # TODO ideally we'd have only [executable, -cp, long classpath string] in entrypoint and the rest as CMD
   echo -n 'ENTRYPOINT ["'  >> $dfile
