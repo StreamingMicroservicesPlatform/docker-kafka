@@ -1,5 +1,11 @@
 FROM adoptopenjdk:11.0.6_10-jdk-hotspot@sha256:4be6d6e43ffb3ebac9ef4f4c2ea61e374690dd8ac39014bc7ca84c3ae2f26b6e
 
+COPY --from=maven:3.6.3-jdk-11-slim@sha256:18f059e73cffdf1688093e2e82f1001a7cd2baa9de92e7b8d05bf34a8318ee92 \
+  /usr/share/maven /usr/share/maven
+RUN ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+ENV MAVEN_HOME=/usr/share/maven
+ENV MAVEN_CONFIG=/root/.m2
+
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \
   runDeps='ca-certificates netcat-openbsd libsnappy1v5 liblz4-1 libzstd1'; \
@@ -24,9 +30,3 @@ RUN set -ex; \
 ENV PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/graalvm/bin
 
 RUN gu install native-image
-
-COPY --from=maven:3.6.3-jdk-11-slim@sha256:18f059e73cffdf1688093e2e82f1001a7cd2baa9de92e7b8d05bf34a8318ee92 \
-  /usr/share/maven /usr/share/maven
-RUN ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
-ENV MAVEN_HOME=/usr/share/maven
-ENV MAVEN_CONFIG=/root/.m2
