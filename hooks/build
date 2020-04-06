@@ -25,6 +25,12 @@ graalvm=$(imagename graalvm)
 docker build -t solsson/kafka:graalvm -t "$graalvm" ./jdk-adoptopenjdk-graalvm
 PUSH="$PUSH $graalvm"
 
+[ "$NATIVEAGENT" = "true" ] && {
+  nativeagent=$(imagename graalvm)
+  docker build -t solsson/kafka:nativeagent -t "$nativeagent" ./nativeagent
+  mkdir -p ./nativeagent/kafka-entrypoints
+}
+
 nonroot=$(imagename nonroot)
 docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot
 PUSH="$PUSH $nonroot"
@@ -53,6 +59,14 @@ function entrypoint_gen {
   echo '"]'                >> $dfile
   docker build -t $image -f $dfile ./kafka-entrypoints
   PUSH="$PUSH $image"
+
+  [ "$NATIVEAGENT" = "true" ] && {
+    cp $dfile nativeagent/$dfile
+    sed -i "s|FROM .*|FROM $nativeagent|" nativeagent/$dfile
+    sed -i 's|  , "-cp" \\|  , "-agentpath:/opt/graalvm/lib/libnative-image-agent.so=config-merge-dir=/home/nonroot/native-config" \\\
+  , "-cp" \\|' nativeagent/$dfile
+    docker build -t $image-nativeagent -f nativeagent/$dfile ./nativeagent
+  }
 }
 
 entrypoint_gen ./bin/kafka-server-start.sh /etc/kafka/server.properties
@@ -67,3 +81,7 @@ entrypoint_gen ./bin/kafka-leader-election.sh
 
 [ -z "$NOPUSH" ] || exit 0
 for P in $PUSH; do docker push $P; done
+
+[ "$NATIVEAGENT" = "true" ] && {
+  ./nativeagent/native-usecases.sh
+}
