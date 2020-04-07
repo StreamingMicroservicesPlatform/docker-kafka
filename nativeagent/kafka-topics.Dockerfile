@@ -41,4 +41,5 @@ RUN native-image \
   -Dlog4j.configuration=file:/etc/kafka/log4j.properties \
   -cp ${classpath} \
   -H:Name=kafka-topics \
-  kafka.admin.TopicCommand
+  kafka.admin.TopicCommand \
+  /home/nonroot/kafka-topics
