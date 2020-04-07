@@ -29,6 +29,10 @@ RUN native-image \
   -H:IncludeResourceBundles=joptsimple.HelpFormatterMessages \
   -H:IncludeResourceBundles=joptsimple.ExceptionMessages \
   -H:ConfigurationFileDirectories=/home/nonroot/native-config \
+  # Added because of failure with a Log4J2LoggerFactory
+  --allow-incomplete-classpath \
+  # Added because of "Invoke with MethodHandle argument ..."
+  --report-unsupported-elements-at-runtime \
   # -D options from entrypoint
   -Djava.awt.headless=true \
   -Dkafka.logs.dir=/opt/kafka/bin/../logs \
