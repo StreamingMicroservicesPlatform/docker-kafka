@@ -34,8 +34,8 @@ PUSH="$PUSH $graalvm"
 
 [ "$NATIVEAGENT" = "true" ] && {
   nativeagent=$(imagename graalvm)
-  docker build -t solsson/kafka:nativeagent -t "$nativeagent" ./nativeagent
-  mkdir -p ./nativeagent/kafka-entrypoints
+  docker build -t solsson/kafka:nativeagent -t "$nativeagent" ./native
+  mkdir -p ./native/kafka-entrypoints
 }
 
 nonroot=$(imagename nonroot)
@@ -68,11 +68,11 @@ function entrypoint_gen {
   PUSH="$PUSH $image"
 
   [ "$NATIVEAGENT" != "true" ] || {
-    cp $dfile nativeagent/$dfile
-    sed -i "s|FROM .*|FROM $nativeagent|" nativeagent/$dfile
+    cp $dfile native/$dfile
+    sed -i "s|FROM .*|FROM $nativeagent|" native/$dfile
     sed -i 's|  , "-cp" \\|  , "-agentpath:/opt/graalvm/lib/libnative-image-agent.so=config-merge-dir=/home/nonroot/native-config" \\\
-  , "-cp" \\|' nativeagent/$dfile
-    docker build -t $image -f nativeagent/$dfile ./nativeagent
+  , "-cp" \\|' native/$dfile
+    docker build -t $image -f native/$dfile ./native
   }
 }
 
@@ -87,7 +87,7 @@ entrypoint_gen ./bin/kafka-leader-election.sh
 # Entrypoints done, run native build stuff
 
 [ "$NATIVEAGENT" != "true" ] || {
-  ./nativeagent/native-usecases.sh
+  ./native/native-usecases.sh
 }
 
 [ "$NATIVE" != "true" ] || {
@@ -97,7 +97,7 @@ entrypoint_gen ./bin/kafka-leader-election.sh
       kafka-topics \
       ; do
     nativename=$(imagename $nativebuild)
-    docker build -t solsson/kafka:native-$nativebuild -t "$nativename" -f nativeagent/$nativebuild.Dockerfile nativeagent/
+    docker build -t solsson/kafka:native-$nativebuild -t "$nativename" -f native/$nativebuild.Dockerfile native/
     PUSH="$PUSH $nativename"
   done
 }

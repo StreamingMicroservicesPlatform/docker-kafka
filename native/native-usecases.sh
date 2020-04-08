@@ -2,7 +2,7 @@
 [ -z "$DEBUG" ] || set -x
 set -e
 
-basedir=$(pwd)/nativeagent
+basedir=$(pwd)/native
 mkdir $basedir/configs
 
 function configvolume {

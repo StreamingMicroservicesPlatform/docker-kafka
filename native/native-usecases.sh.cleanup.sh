@@ -12,5 +12,5 @@ docker rm kafka-0
 docker rm zoo-0
 docker network rm native-usecases
 
-basedir=$(pwd)/nativeagent
+basedir=$(pwd)/native
 rm -r $basedir/configs
