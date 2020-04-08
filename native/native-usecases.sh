@@ -3,6 +3,7 @@
 set -e
 
 basedir=$(pwd)/native
+[ ! -d $basedir/configs ] || echo "Try ./native/native-usecases.sh.cleanup.sh on failure"
 mkdir $basedir/configs
 
 function configvolume {
@@ -14,6 +15,8 @@ function configvolume {
     echo '[]' > $dir/reflect-config.json
     echo '[]' > $dir/proxy-config.json
     echo '{}' > $dir/resource-config.json
+    [ ! -d $basedir/configs-manual-additions/$entrypoint ] || \
+      cp $basedir/configs-manual-additions/$entrypoint/* $dir/
     chmod a+w $dir/*
   }
   echo $dir
@@ -59,4 +62,6 @@ docker run --network="native-usecases" -v $(configvolume kafka-topics):/home/non
 docker exec kafka-0 kill -s TERM 1
 docker exec zoo-0 kill -s TERM 1
 
-docker network rm native-usecases || echo "Failed to clean up network but exiting 0 anyway"
+sleep 10 # or wait for containers to exit, maybe we could us a label
+
+docker network rm native-usecases

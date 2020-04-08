@@ -13,4 +13,4 @@ docker rm zoo-0
 docker network rm native-usecases
 
 basedir=$(pwd)/native
-rm -r $basedir/configs
+rm -r $basedir/configs || true
