@@ -1,4 +1,47 @@
 [
+  {
+    "name": "org.apache.log4j.helpers.Loader"
+  },
+    {
+      "name": "org.slf4j.impl.StaticLoggerBinder"
+    },
+    {
+      "name": "com.fasterxml.jackson.databind.ObjectMapper",
+      "allDeclaredFields": true,
+      "allPublicFields": true,
+      "allDeclaredMethods": true,
+      "allPublicMethods": true
+    },
+    {
+      "name": "sun.security.provider.ConfigFile",
+      "methods": [
+        { "name": "<init>", "parameterTypes": [] }
+      ]
+    },
+    {
+      "name": "org.apache.kafka.common.serialization.StringDeserializer",
+      "methods": [
+        { "name": "<init>", "parameterTypes": [] }
+      ]
+    },
+    {
+      "name": "org.apache.kafka.common.serialization.StringSerializer",
+      "methods": [
+        { "name": "<init>", "parameterTypes": [] }
+      ]
+    },
+    {
+      "name": "org.apache.kafka.clients.consumer.RangeAssignor",
+      "methods": [
+        { "name": "<init>", "parameterTypes": [] }
+      ]
+    },
+    {
+      "name": "org.apache.zookeeper.ClientCnxnSocketNIO",
+      "methods": [
+        { "name": "<init>" }
+      ]
+    },
 {
   "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }]
