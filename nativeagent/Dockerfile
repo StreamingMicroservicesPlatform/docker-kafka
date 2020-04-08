@@ -1,4 +1,4 @@
-FROM solsson/kafka:graalvm
+FROM solsson/kafka:nativeagent-graalvm
 
 # Should be identical to kafka-nonroot's user
 RUN useradd --create-home --home-dir /home/nonroot --uid 65532 --gid 65534 -c nonroot -s /usr/sbin/nologin nonroot

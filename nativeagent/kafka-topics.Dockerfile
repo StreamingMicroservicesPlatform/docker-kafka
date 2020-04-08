@@ -1,4 +1,4 @@
-FROM solsson/kafka:graalvm
+FROM solsson/kafka:nativeagent
 
 COPY configs/kafka-topics /home/nonroot/native-config
 ENTRYPOINT ["/opt/java/openjdk/bin/java" \

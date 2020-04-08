@@ -5,6 +5,13 @@ set -e
 PUSH=""
 
 [ -z "$IMAGE_NAME" ] && echo "IMAGE_NAME is required" && exit 1;
+
+# Nativeagent is a prerequisite of native, but meant to run locally with result json and Dockerfiles commited
+# NOPUSH=true IMAGE_NAME=solsson/kafka:nativeagentagent ./hooks/build
+[ -z "$NATIVEAGENT" ] && echo $IMAGE_NAME | grep 'nativeagent$' && NATIVEAGENT=true
+# Docker Hub builds with tags ending with "native"
+[ -z "$NATIVE" ] && echo $IMAGE_NAME | grep 'native$' && NATIVE=true
+
 function imagename {
   buildname=$1
   case $IMAGE_NAME in
@@ -60,12 +67,12 @@ function entrypoint_gen {
   docker build -t $image -f $dfile ./kafka-entrypoints
   PUSH="$PUSH $image"
 
-  [ "$NATIVEAGENT" = "true" ] && {
+  [ "$NATIVEAGENT" != "true" ] || {
     cp $dfile nativeagent/$dfile
     sed -i "s|FROM .*|FROM $nativeagent|" nativeagent/$dfile
     sed -i 's|  , "-cp" \\|  , "-agentpath:/opt/graalvm/lib/libnative-image-agent.so=config-merge-dir=/home/nonroot/native-config" \\\
   , "-cp" \\|' nativeagent/$dfile
-    docker build -t $image-nativeagent -f nativeagent/$dfile ./nativeagent
+    docker build -t $image -f nativeagent/$dfile ./nativeagent
   }
 }
 
@@ -77,11 +84,26 @@ entrypoint_gen ./bin/kafka-consumer-groups.sh
 entrypoint_gen ./bin/kafka-reassign-partitions.sh
 entrypoint_gen ./bin/kafka-leader-election.sh
 
-# Entrypoints done
+# Entrypoints done, run native build stuff
 
-[ -z "$NOPUSH" ] || exit 0
-for P in $PUSH; do docker push $P; done
-
-[ "$NATIVEAGENT" = "true" ] && {
+[ "$NATIVEAGENT" != "true" ] || {
   ./nativeagent/native-usecases.sh
 }
+
+[ "$NATIVE" != "true" ] || {
+  # Don't push anything else with native builds because those images would also get a "native" tag
+  PUSH=""
+  for nativebuild in \
+      kafka-topics \
+      ; do
+    nativename=$(imagename $nativebuild)
+    docker build -t solsson/kafka:native-$nativebuild -t "$nativename" -f nativeagent/$nativebuild.Dockerfile nativeagent/
+    PUSH="$PUSH $nativename"
+  done
+}
+
+# Push results
+
+echo "PUSH list contains: $PUSH"
+[ -z "$NOPUSH" ] || exit 0
+for P in $PUSH; do docker push $P; done

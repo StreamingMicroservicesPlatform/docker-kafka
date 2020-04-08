@@ -65,3 +65,12 @@ We've kept the repository name to avoid breaking the automated build of solsson/
 
 For legacy Dockerfiles from this repo (if you navigated to here from a Docker Hub [solsson](https://hub.docker.com/u/solsson/) image),
 see https://github.com/solsson/dockerfiles/tree/misc-dockerfiles.
+
+## Native builds
+
+Still very experimental.
+
+```
+NOPUSH=true IMAGE_NAME=solsson/kafka:nativeagent ./hooks/build
+NOPUSH=true IMAGE_NAME=solsson/kafka:native ./hooks/build
+```
