@@ -8,12 +8,14 @@ mkdir $basedir/configs
 function configvolume {
   entrypoint=$1
   dir=$basedir/configs/$entrypoint
-  [ -d $dir ] || mkdir $dir
-  echo '[]' > $dir/jni-config.json
-  echo '[]' > $dir/reflect-config.json
-  echo '[]' > $dir/proxy-config.json
-  echo '{}' > $dir/resource-config.json
-  chmod a+w $dir/*
+  [ -d $dir ] || {
+    mkdir $dir
+    echo '[]' > $dir/jni-config.json
+    echo '[]' > $dir/reflect-config.json
+    echo '[]' > $dir/proxy-config.json
+    echo '{}' > $dir/resource-config.json
+    chmod a+w $dir/*
+  }
   echo $dir
 }
 
@@ -48,6 +50,11 @@ docker run --network="native-usecases" -v $(configvolume kafka-topics):/home/non
   --name topic1-zk solsson/kafka:nativeagent-kafka-topics \
   --zookeeper zoo-0:2181 \
   --create --topic topic1 --partitions 1 --replication-factor 1 --if-not-exists
+
+docker run --network="native-usecases" -v $(configvolume kafka-topics):/home/nonroot/native-config \
+  --name topics-list solsson/kafka:nativeagent-kafka-topics \
+  --bootstrap-server kafka-0:9092 \
+  --list | grep topic1
 
 docker exec kafka-0 kill -s TERM 1
 docker exec zoo-0 kill -s TERM 1

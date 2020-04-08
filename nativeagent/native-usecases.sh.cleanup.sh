@@ -5,6 +5,7 @@
 docker rm -f topic0
 docker rm -f topic1
 docker rm -f topic1-zk
+docker rm -f topics-list
 docker kill kafka-0
 docker kill zoo-0
 docker rm kafka-0
