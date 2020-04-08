@@ -43,3 +43,20 @@ RUN native-image \
   -H:Name=kafka-topics \
   kafka.admin.TopicCommand \
   /home/nonroot/kafka-topics
+
+FROM gcr.io/distroless/base-debian10:nonroot@sha256:56da492c4800196c29f3e9fac3c0e66af146bfd31694f29f0958d6d568139dd9
+
+COPY --from=0 \
+  /lib/x86_64-linux-gnu/libz.so.* \
+  /lib/x86_64-linux-gnu/
+
+COPY --from=0 \
+  /usr/lib/x86_64-linux-gnu/libzstd.so.* \
+  /usr/lib/x86_64-linux-gnu/libsnappy.so.* \
+  /usr/lib/x86_64-linux-gnu/liblz4.so.* \
+  /usr/lib/x86_64-linux-gnu/
+
+WORKDIR /usr/local
+COPY --from=0 /home/nonroot/kafka-topics ./bin/kafka-topics.sh
+
+ENTRYPOINT [ "/usr/local/bin/kafka-topics.sh" ]
