@@ -24,7 +24,7 @@ function configvolume {
 
 docker network create native-usecases
 
-docker run -d --network="native-usecases" -v $(configvolume zooekeeper-server-start):/home/nonroot/native-config \
+docker run -d --network="native-usecases" -v $(configvolume zookeeper-server-start):/home/nonroot/native-config \
   --name zoo-0 --expose=2181 solsson/kafka:nativeagent-zookeeper-server-start
 
 sleep 1
