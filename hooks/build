@@ -95,7 +95,7 @@ entrypoint_gen ./bin/kafka-leader-election.sh
   PUSH=""
   for nativebuild in \
       kafka-topics \
-      ; do
+      cli; do
     nativename=$(imagename $nativebuild)
     docker build -t solsson/kafka:native-$nativebuild -t "$nativename" -f native/$nativebuild.Dockerfile native/
     PUSH="$PUSH $nativename"

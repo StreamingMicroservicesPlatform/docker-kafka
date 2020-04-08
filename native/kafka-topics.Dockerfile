@@ -44,7 +44,7 @@ RUN native-image \
   kafka.admin.TopicCommand \
   /home/nonroot/kafka-topics
 
-FROM gcr.io/distroless/base-debian10:debug-nonroot@sha256:ad9cb88a4d4e6969b44137de488c2a21e0e53d32a7eed601b39bf760bfdf14d0
+FROM gcr.io/distroless/base-debian10:nonroot@sha256:56da492c4800196c29f3e9fac3c0e66af146bfd31694f29f0958d6d568139dd9
 
 COPY --from=0 \
   /lib/x86_64-linux-gnu/libz.so.* \

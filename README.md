@@ -68,9 +68,21 @@ see https://github.com/solsson/dockerfiles/tree/misc-dockerfiles.
 
 ## Native builds
 
-Still very experimental.
+Very experimental.
 
 ```
+./native/native-usecases.sh.cleanup.sh
 NOPUSH=true IMAGE_NAME=solsson/kafka:nativeagent ./hooks/build
 NOPUSH=true IMAGE_NAME=solsson/kafka:native ./hooks/build
+```
+
+To test the native images reuse the usecases script:
+
+```
+docker tag solsson/kafka:native-kafka-topics solsson/kafka:nativeagent-kafka-topics
+./native/native-usecases.sh.cleanup.sh
+./native/native-usecases.sh
+git restore --source=HEAD --staged --worktree -- native/configs/
+# The cli image should simply combine the supported commands
+docker run --rm --entrypoint sh solsson/kafka:native-cli -c 'ls ./bin/'
 ```
