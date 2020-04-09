@@ -8,8 +8,10 @@ docker rm -f topic1-zk
 docker rm -f topics-list
 docker kill kafka-0
 docker kill zoo-0
+docker kill zoo-1
 docker rm kafka-0
 docker rm zoo-0
+docker rm zoo-1
 docker network rm native-usecases
 
 basedir=$(pwd)/native
