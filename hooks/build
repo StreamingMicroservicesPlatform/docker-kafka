@@ -28,23 +28,24 @@ PUSH="$PUSH $jre"
 docker build -t solsson/kafka -t "$IMAGE_NAME" ./kafka
 PUSH="$PUSH $IMAGE_NAME"
 
-graalvm=$(imagename graalvm)
-docker build -t solsson/kafka:graalvm -t "$graalvm" ./jdk-adoptopenjdk-graalvm
-PUSH="$PUSH $graalvm"
-
-[ "$NATIVEAGENT" = "true" ] && {
-  nativeagent=$(imagename graalvm)
-  docker build -t solsson/kafka:nativeagent -t "$nativeagent" ./native
-  mkdir -p ./native/kafka-entrypoints
-}
-
 nonroot=$(imagename nonroot)
 docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot
 PUSH="$PUSH $nonroot"
 
+graalvm=$(imagename graalvm)
+docker build -t solsson/kafka:graalvm -t "$graalvm" ./jdk-adoptopenjdk-graalvm
+PUSH="$PUSH $graalvm"
+
+nativeagent=$(imagename nativebase)
+docker build -t solsson/kafka:nativebase -t "$nativeagent" ./native
+
 # Generatoe entrypoints
 entrypoints=$(imagename entrypoints)
 docker build -t $entrypoints ./kafka-entrypoints
+
+[ "$NATIVEAGENT" = "true" ] && {
+  mkdir -p ./native/kafka-entrypoints
+}
 
 function entrypoint_gen {
   echo "# $@"
