@@ -11,10 +11,14 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt /root/.gnupg
 
-RUN ln -s /usr/local/bin/kafka-topics.sh /usr/local/bin/kafka-topics
+COPY cli-scripts/* /usr/local/bin/
+
+RUN for sh in $(find /usr/local/bin/ -name *.sh); do \
+  ln -s $sh $(echo -n $sh | sed 's/\.sh$//'); \
+  done
 
 # Should be identical to kafka-nonroot's user
 RUN useradd --create-home --home-dir /home/nonroot --uid 65532 --gid 65534 -c nonroot -s /usr/sbin/nologin nonroot
 USER nonroot:nogroup
 
-ENTRYPOINT [ "ls", "-l", "/usr/local/bin" ]
+ENTRYPOINT [ "cli-list" ]
