@@ -1,7 +1,8 @@
 FROM solsson/kafka:graalvm
 
 # Should be identical to kafka-nonroot's user
-RUN useradd --create-home --home-dir /home/nonroot --uid 65532 --gid 65534 -c nonroot -s /usr/sbin/nologin nonroot
+RUN echo 'nonroot:x:65532:65534:nonroot:/home/nonroot:/usr/sbin/nologin' >> /etc/passwd && \
+  mkdir -p /home/nonroot && touch /home/nonroot/.bash_history && chown -R 65532:65534 /home/nonroot
 USER nonroot:nogroup
 
 COPY --from=solsson/kafka:nonroot /opt/kafka /opt/kafka
