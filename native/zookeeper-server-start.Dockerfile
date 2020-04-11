@@ -1,4 +1,4 @@
-FROM solsson/kafka:nativeagent
+FROM solsson/kafka:nativebase
 
 RUN curl -L -o /home/nonroot/slf4j-simple-1.7.28.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.28/slf4j-simple-1.7.28.jar
 
