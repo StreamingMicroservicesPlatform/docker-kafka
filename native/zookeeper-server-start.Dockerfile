@@ -1,9 +1,9 @@
 FROM solsson/kafka:nativebase
 
-#RUN curl -L -o /home/nonroot/slf4j-simple-1.7.28.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.28/slf4j-simple-1.7.28.jar
+RUN curl -L -o /home/nonroot/slf4j-simple-1.7.28.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.28/slf4j-simple-1.7.28.jar
 
 # TODO extract from entrypoint
-ARG classpath=/opt/kafka/bin/../libs/log4j-1.2.17.jar:/opt/kafka/bin/../libs/slf4j-api-1.7.28.jar:/opt/kafka/bin/../libs/slf4j-log4j12-1.7.28.jar:/opt/kafka/bin/../libs/zookeeper-3.5.7.jar:/opt/kafka/bin/../libs/zookeeper-jute-3.5.7.jar
+ARG classpath=/home/nonroot/slf4j-simple-1.7.28.jar:/opt/kafka/bin/../libs/slf4j-api-1.7.28.jar:/opt/kafka/bin/../libs/zookeeper-3.5.7.jar:/opt/kafka/bin/../libs/zookeeper-jute-3.5.7.jar
 
 COPY configs/zookeeper-server-start /home/nonroot/native-config
 
