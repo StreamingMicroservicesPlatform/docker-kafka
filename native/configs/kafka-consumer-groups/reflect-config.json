@@ -54,6 +54,13 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.apache.log4j.helpers.Loader"
+},
+{
   "name":"org.apache.log4j.spi.OptionHandler"
+},
+{
+  "name":"sun.security.provider.ConfigFile",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]
