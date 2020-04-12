@@ -43,6 +43,23 @@
         -   zookeeper.connect=zoo-1:2181
         - --override
         -   advertised.listeners=PLAINTEXT://kafka-0:9092
+        - --override
+        -   auto.create.topics.enable=false
+
+      kafka-1:
+        image: solsson/kafka:nativeagent-kafka-server-start
+        depends_on:
+        - kafka-0
+        command:
+        - /etc/kafka/server.properties
+        - --override
+        -   broker.id=1
+        - --override
+        -   zookeeper.connect=zoo-2:2181
+        - --override
+        -   advertised.listeners=PLAINTEXT://kafka-1:9092
+        - --override
+        -   auto.create.topics.enable=false
 
       step1:
         image: solsson/kafka:nativeagent-kafka-topics
