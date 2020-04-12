@@ -96,6 +96,8 @@ entrypoint_gen ./bin/kafka-leader-election.sh
   PUSH=""
   for nativebuild in \
       kafka-topics \
+      kafka-configs \
+      kafka-consumer-groups \
       zookeeper-server-start \
       cli; do
     nativename=$(imagename $nativebuild)

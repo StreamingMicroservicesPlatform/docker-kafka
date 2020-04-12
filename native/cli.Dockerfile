@@ -2,6 +2,8 @@ FROM ubuntu:20.04@sha256:1515a62dc73021e2e7666a31e878ef3b4daddc500c3d031b35130ac
 
 WORKDIR /usr/local
 COPY --from=solsson/kafka:native-kafka-topics /usr/local/bin/* /usr/local/bin/
+COPY --from=solsson/kafka:native-kafka-configs /usr/local/bin/* /usr/local/bin/
+COPY --from=solsson/kafka:native-kafka-consumer-groups /usr/local/bin/* /usr/local/bin/
 
 RUN set -ex; \
   export DEBIAN_FRONTEND=noninteractive; \

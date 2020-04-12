@@ -79,7 +79,7 @@ NOPUSH=true IMAGE_NAME=solsson/kafka:native ./hooks/build
 To test the native images reuse the usecases script:
 
 ```
-for build in kafka-topics; do
+for build in kafka-topics kafka-configs kafka-consumer-groups; do
   docker tag solsson/kafka:native-$build solsson/kafka:nativeagent-$build
 done
 ./native/native-usecases.sh
