@@ -10,6 +10,7 @@ compose="docker-compose -f $basedir/docker-compose.yml"
   zookeeper-server-start
   kafka-server-start
   kafka-topics
+  kafka-configs
 "
 
 for entrypoint in $CLEANUP; do
@@ -31,6 +32,6 @@ $compose up -d kafka-0
 $compose up -d kafkacat
 $compose ps
 
-for step in $(seq 1 3); do
+for step in $(seq 1 4); do
   $compose up step$step
 done

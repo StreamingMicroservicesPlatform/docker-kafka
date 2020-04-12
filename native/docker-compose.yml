@@ -51,6 +51,8 @@
         - --bootstrap-server=kafka-0:9092
         - --create
         - --topic=topic1
+        - --config
+        -   compression.type=uncompressed
 
       step2:
         image: solsson/kafka:nativeagent-kafka-topics
@@ -61,6 +63,8 @@
         - --topic=topic1
         - --partitions=1
         - --replication-factor=1
+        - --config
+        -   compression.type=uncompressed
         - --if-not-exists
 
       step3:
@@ -69,6 +73,28 @@
         command:
         - --bootstrap-server=kafka-0:9092
         - --list
+
+      step4:
+        image: solsson/kafka:nativeagent-kafka-configs
+        volumes: [             ./configs/kafka-configs:/home/nonroot/native-config ]
+        command:
+        - --zookeeper=zoo-0:2181
+        - --entity-type=topics
+        - --entity-name=topic1
+        - --alter
+        -   --add-config
+        -     retention.ms=-1
+
+      step5:
+        image: solsson/kafka:nativeagent-kafka-configs
+        volumes: [             ./configs/kafka-configs:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --entity-type=brokers
+        - --entity-name=0
+        - --alter
+        -   --add-config
+        -     min.insync.replicas=1
 
       kafkacat:
         image: edenhill/kafkacat:1.5.0
