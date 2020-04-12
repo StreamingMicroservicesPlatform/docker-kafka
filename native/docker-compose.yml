@@ -96,6 +96,25 @@
         -   --add-config
         -     min.insync.replicas=1
 
+      step6:
+        image: solsson/kafka:nativeagent-kafka-consumer-groups
+        volumes: [             ./configs/kafka-consumer-groups:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --group=testgroup
+        - --topic=topic1
+        - --reset-offsets
+        - --execute
+        - --to-latest
+
+      step7:
+        image: solsson/kafka:nativeagent-kafka-consumer-groups
+        volumes: [             ./configs/kafka-consumer-groups:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --group=testgroup
+        - --describe
+
       kafkacat:
         image: edenhill/kafkacat:1.5.0
         depends_on:

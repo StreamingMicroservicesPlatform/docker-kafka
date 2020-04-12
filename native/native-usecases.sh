@@ -11,6 +11,7 @@ compose="docker-compose -f $basedir/docker-compose.yml"
   kafka-server-start
   kafka-topics
   kafka-configs
+  kafka-consumer-groups
 "
 
 for entrypoint in $CLEANUP; do
