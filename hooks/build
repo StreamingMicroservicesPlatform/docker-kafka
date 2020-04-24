@@ -63,6 +63,7 @@ function entrypoint_gen {
   CMD ["/etc/kafka|g' \
     | sed 's|, "-Xlog:gc|#, "-Xlog:gc|g' \
     | sed 's|, "-Dcom.sun.management.jmxremote|#, "-Dcom.sun.management.jmxremote|g' \
+    | sed 's|, "/opt/kafka/libs/extensions/..*:/opt/kafka/bin/../libs/.*|, "/opt/kafka/libs/extensions/*:/opt/kafka/libs/*" \\|g' \
     >> $dfile
   echo '"]'                >> $dfile
   docker build -t $image -f $dfile ./kafka-entrypoints
