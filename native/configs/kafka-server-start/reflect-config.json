@@ -95,6 +95,9 @@
   "allDeclaredMethods":true
 },
 {
+  "name":"java.util.zip.CRC32C"
+},
+{
   "name":"kafka.server.DelayedOperationPurgatory$WatcherList[]"
 },
 {
@@ -103,6 +106,9 @@
 },
 {
   "name":"kafka.utils.timer.TimerTaskList[]"
+},
+{
+  "name":"org.apache.kafka.common.protocol.types.Struct[]"
 },
 {
   "name":"org.apache.kafka.common.resource.PatternType[]"
