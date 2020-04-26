@@ -1,20 +1,23 @@
+FROM adoptopenjdk:11.0.7_10-jdk-hotspot-bionic@sha256:c2ce12d7530d957f2d44dd33339eeeafa3b889c27af0824b186c4afef1f843ef \
+  as nonlibs
+RUN echo "class Empty {public static void main(String[] a){}}" > Empty.java && javac Empty.java && jar --create --file /empty.jar Empty.class
+
 FROM curlimages/curl@sha256:aa45e9d93122a3cfdf8d7de272e2798ea63733eeee6d06bd2ee4f2f8c4027d7c \
-  as libs
+  as extralibs
 
 USER root
-RUN curl -L -o /unused https://repo1.maven.org/maven2/org/spark-project/spark/unused/1.0.0/unused-1.0.0.jar
-RUN curl -L -o /slf4j-simple-1.7.30.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.28/slf4j-simple-1.7.30.jar
+RUN curl -L -o /slf4j-simple-1.7.30.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar
 RUN curl -L -o /quarkus-kafka-client-1.3.2.Final.jar https://repo1.maven.org/maven2/io/quarkus/quarkus-kafka-client/1.3.2.Final/quarkus-kafka-client-1.3.2.Final.jar
 
 FROM solsson/kafka:nativebase
 
 ARG classpath=/opt/kafka/libs/extensions/*:/opt/kafka/libs/*
 
-COPY --from=libs /*.jar /opt/kafka/libs/extensions/
+COPY --from=extralibs /*.jar /opt/kafka/libs/extensions/
 
 # docker run --rm --entrypoint ls solsson/kafka -l /opt/kafka/libs/ | grep log
-COPY --from=libs /unused /opt/kafka/libs/slf4j-log4j12-1.7.30.jar
-COPY --from=libs /unused /opt/kafka/libs/log4j-1.2.17.jar
+COPY --from=nonlibs /empty.jar /opt/kafka/libs/slf4j-log4j12-1.7.30.jar
+COPY --from=nonlibs /empty.jar /opt/kafka/libs/log4j-1.2.17.jar
 
 COPY configs/kafka-topics /home/nonroot/native-config
 
@@ -25,14 +28,11 @@ RUN native-image \
   -H:IncludeResourceBundles=joptsimple.HelpFormatterMessages \
   -H:IncludeResourceBundles=joptsimple.ExceptionMessages \
   -H:ConfigurationFileDirectories=/home/nonroot/native-config \
-  # Added because of failure with a Log4J2LoggerFactory
-  --allow-incomplete-classpath \
   # Added because of "Invoke with MethodHandle argument ..."
   --report-unsupported-elements-at-runtime \
   # -D options from entrypoint
   -Djava.awt.headless=true \
   -Dkafka.logs.dir=/opt/kafka/bin/../logs \
-  -Dlog4j.configuration=file:/etc/kafka/log4j.properties \
   -cp ${classpath} \
   -H:Name=kafka-topics \
   kafka.admin.TopicCommand \
