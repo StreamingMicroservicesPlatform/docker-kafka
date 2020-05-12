@@ -27,7 +27,6 @@
         command:
         - /etc/kafka/zookeeper.properties.zoo-2
         volumes:
-        - ./configs/zookeeper-server-start:/home/nonroot/native-config
         - ./native-usecases.sh.configs:/etc/kafka
         - ./native-usecases.sh.configs/myid.zoo-2:/home/nonroot/myid
 
