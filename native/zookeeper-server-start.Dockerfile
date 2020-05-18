@@ -7,6 +7,14 @@ ARG classpath=/home/nonroot/slf4j-simple-1.7.28.jar:/opt/kafka/bin/../libs/slf4j
 
 COPY configs/zookeeper-server-start /home/nonroot/native-config
 
+# Remaining issues:
+# - java.lang.NoClassDefFoundError: Could not initialize class org.apache.zookeeper.server.admin.JettyAdminServer
+#   which is fine because https://github.com/apache/zookeeper/blob/release-3.5.7/zookeeper-server/src/main/java/org/apache/zookeeper/server/admin/AdminServerFactory.java
+#   documents that admin server is optional and it's only at startup
+# - WARN org.apache.zookeeper.server.ZooKeeperServer - Failed to register with JMX
+#   java.lang.NullPointerException at org.apache.zookeeper.jmx.MBeanRegistry.register(MBeanRegistry.java:108)
+#   is very annoying because it happens a lot so it fills logs
+
 RUN native-image \
   --no-server \
   -H:+ReportExceptionStackTraces \
