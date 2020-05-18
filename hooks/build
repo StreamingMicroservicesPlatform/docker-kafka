@@ -33,7 +33,7 @@ initutils=$(imagename initutils)
 docker build -t solsson/kafka:initutils -t "$initutils" ./initutils
 PUSH="$PUSH $initutils"
 
-nonrootinitutils=$(imagename initutils-nonrot)
+nonrootinitutils=$(imagename initutils-nonroot)
 docker build -t solsson/kafka:initutils-nonroot -t "$nonrootinitutils" ./initutils-nonroot
 PUSH="$PUSH $nonrootinitutils"
 
