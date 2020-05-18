@@ -66,5 +66,6 @@ entrypoint_gen ./bin/kafka-leader-election.sh
 
 # Entrypoints done
 
+echo "PUSH list contains: $PUSH"
 [ -z "$NOPUSH" ] || exit 0
 for P in $PUSH; do docker push $P; done
