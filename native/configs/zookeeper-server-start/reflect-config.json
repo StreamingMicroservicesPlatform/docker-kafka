@@ -83,5 +83,9 @@
 {
   "name":"org.apache.zookeeper.server.NIOServerCnxnFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.ConfigFile",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]

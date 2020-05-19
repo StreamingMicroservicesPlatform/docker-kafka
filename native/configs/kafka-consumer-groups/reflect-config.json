@@ -19,14 +19,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"org.apache.kafka.clients.consumer.RangeAssignor",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"org.apache.kafka.common.serialization.StringDeserializer",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"org.apache.log4j.Appender"
 },
 {

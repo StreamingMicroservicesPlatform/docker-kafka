@@ -1,11 +1,5 @@
 [
 {
-  "name":"byte[]"
-},
-{
-  "name":"char[]"
-},
-{
   "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -201,5 +195,9 @@
 {
   "name":"sun.misc.Unsafe",
   "fields":[{"name":"theUnsafe"}]
+},
+{
+  "name":"sun.security.provider.ConfigFile",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]
