@@ -18,6 +18,9 @@ RUN native-image \
   --allow-incomplete-classpath \
   # Added because of "Invoke with MethodHandle argument ..."
   --report-unsupported-elements-at-runtime \
+  # https://github.com/oracle/graal/issues/2345
+  #--initialize-at-build-time=java.lang.ref.SoftReference \
+  #--initialize-at-build-time=java.lang.invoke.MethodHandleImpl \
   # -D options from entrypoint
   -Djava.awt.headless=true \
   -Dkafka.logs.dir=/opt/kafka/bin/../logs \

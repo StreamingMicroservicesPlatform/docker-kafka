@@ -17,12 +17,18 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt /root/.gnupg
 
-ARG graalvm_version=20.0.0
+#ARG graalvm_version=20.0.0
 ARG graalvm_variant=java11
+#ARG graalvm_releases=graalvm/graalvm-ce-builds
+#ARG graalvm_build=
+# https://github.com/oracle/graal/issues/2345
+ARG graalvm_releases=graalvm/graalvm-ce-dev-builds
+ARG graalvm_version=20.1.0-dev
+ARG graalvm_build=-20200510_2004
 
 RUN set -ex; \
   cd /opt; \
-  curl -sLS -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${graalvm_version}/graalvm-ce-${graalvm_variant}-linux-amd64-${graalvm_version}.tar.gz; \
+  curl -sLS -o graalvm.tar.gz https://github.com/${graalvm_releases}/releases/download/${graalvm_version}${graalvm_build}/graalvm-ce-${graalvm_variant}-linux-amd64-${graalvm_version}.tar.gz; \
   tar xvzf graalvm.tar.gz; \
   mv graalvm-ce-${graalvm_variant}-${graalvm_version} graalvm; \
   rm graalvm.tar.gz
