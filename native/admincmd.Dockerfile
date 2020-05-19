@@ -53,6 +53,8 @@ COPY --from=0 \
   /usr/lib/x86_64-linux-gnu/
 
 WORKDIR /usr/local
-COPY --from=native /home/nonroot/kafka-topics ./bin/kafka-topics.sh
 
-ENTRYPOINT [ "/usr/local/bin/kafka-topics.sh" ]
+ARG command=
+COPY --from=native /home/nonroot/${command} ./bin/${command}.sh
+
+ENTRYPOINT [ "/usr/local/bin/${command}.sh" ]

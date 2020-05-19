@@ -100,8 +100,9 @@ entrypoint_gen ./bin/kafka-leader-election.sh
       kafka-configs:kafka.admin.ConfigCommand \
       kafka-consumer-groups:kafka.admin.ConsumerGroupCommand; do
     command=$(echo $cli | cut -d: -f1)
-    mainclass=$(echo $cli | cut -d: -f1)
+    mainclass=$(echo $cli | cut -d: -f2)
     nativename=$(imagename $command)
+    echo "Buildig admin CLI $command $mainclass ..."
     docker build -t solsson/kafka:native-$command -t "$nativename" \
       --build-arg command=$command --build-arg mainclass=$mainclass \
       -f native/admincmd.Dockerfile native/
