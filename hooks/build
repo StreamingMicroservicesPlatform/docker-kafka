@@ -95,10 +95,19 @@ entrypoint_gen ./bin/kafka-leader-election.sh
 [ "$NATIVE" != "true" ] || {
   # Don't push anything else with native builds because those images would also get a "native" tag
   PUSH=""
+  for cli in \
+      kafka-topics:kafka.admin.TopicCommand \
+      kafka-configs:kafka.admin.ConfigCommand \
+      kafka-consumer-groups:kafka.admin.ConsumerGroupCommand; do
+    command=$(echo $cli | cut -d: -f1)
+    mainclass=$(echo $cli | cut -d: -f1)
+    nativename=$(imagename $command)
+    docker build -t solsson/kafka:native-$command -t "$nativename" \
+      --build-arg command=$command --build-arg mainclass=$mainclass \
+      -f native/admincmd.Dockerfile native/
+    PUSH="$PUSH $nativename"
+  done
   for nativebuild in \
-      kafka-topics \
-      kafka-configs \
-      kafka-consumer-groups \
       zookeeper-server-start \
       cli; do
     nativename=$(imagename $nativebuild)

@@ -12,13 +12,15 @@ RUN curl -L -o /quarkus-kafka-client-1.4.2.Final.jar https://repo1.maven.org/mav
 FROM solsson/kafka:nativebase as native
 
 ARG classpath=/opt/kafka/libs/extensions/*:/opt/kafka/libs/*
+ARG mainclass=
+ARG command=
 
 COPY --from=extralibs /*.jar /opt/kafka/libs/extensions/
 
 # docker run --rm --entrypoint ls solsson/kafka -l /opt/kafka/libs/ | grep log
 COPY --from=nonlibs /empty.jar /opt/kafka/libs/slf4j-log4j12-1.7.30.jar
 
-COPY configs/kafka-topics /home/nonroot/native-config
+COPY configs/${command} /home/nonroot/native-config
 
 RUN native-image \
   --no-server \
@@ -34,9 +36,9 @@ RUN native-image \
   -Djava.awt.headless=true \
   -Dkafka.logs.dir=/opt/kafka/bin/../logs \
   -cp ${classpath} \
-  -H:Name=kafka-topics \
-  kafka.admin.TopicCommand \
-  /home/nonroot/kafka-topics
+  -H:Name=${command} \
+  ${mainclass} \
+  /home/nonroot/${command}
 
 FROM gcr.io/distroless/base-debian10:nonroot@sha256:26abe8d89163131be2a159a9d8082e921387f196127f42ce77fb96420dbecf88
 
