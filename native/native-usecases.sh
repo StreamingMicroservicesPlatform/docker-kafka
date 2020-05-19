@@ -22,7 +22,7 @@ for entrypoint in $CLEANUP; do
   echo '{}' > $dir/resource-config.json
   [ ! -d $basedir/configs-manual-additions/$entrypoint ] || \
     cp $basedir/configs-manual-additions/$entrypoint/* $dir/
-  chmod a+w $dir/*
+  chmod -R ug+w $dir
 done
 
 $compose up -d zoo-0

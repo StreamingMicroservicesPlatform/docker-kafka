@@ -84,6 +84,7 @@ for build in kafka-topics kafka-configs kafka-consumer-groups zookeeper-server-s
 done
 ./native/native-usecases.sh
 docker-compose -f native/docker-compose.yml down
+docker run --rm --entrypoint chown -v $(pwd)/native/configs:/configs busybox -R $(id -u) /configs
 git restore --source=HEAD --staged --worktree -- native/configs/
 # The cli image should simply combine the supported commands
 docker run --rm --entrypoint sh solsson/kafka:native-cli -c 'ls ./bin/'

@@ -1,8 +1,21 @@
     version: '2.1'
     services:
 
+      chgrp:
+        image: busybox
+        entrypoint:
+        - chgrp
+        command:
+        - -R
+        - "65534"
+        - /configs
+        volumes:
+        - ./configs:/configs
+
       zoo-0:
         image: solsson/kafka:nativeagent-zookeeper-server-start
+        depends_on:
+        - chgrp
         command:
         - /etc/kafka/zookeeper.properties.zoo-0
         volumes:
