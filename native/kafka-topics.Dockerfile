@@ -9,7 +9,7 @@ USER root
 RUN curl -L -o /slf4j-simple-1.7.30.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar
 RUN curl -L -o /quarkus-kafka-client-1.4.2.Final.jar https://repo1.maven.org/maven2/io/quarkus/quarkus-kafka-client/1.4.2.Final/quarkus-kafka-client-1.4.2.Final.jar
 
-FROM solsson/kafka:nativebase
+FROM solsson/kafka:nativebase as native
 
 ARG classpath=/opt/kafka/libs/extensions/*:/opt/kafka/libs/*
 
@@ -51,6 +51,6 @@ COPY --from=0 \
   /usr/lib/x86_64-linux-gnu/
 
 WORKDIR /usr/local
-COPY --from=0 /home/nonroot/kafka-topics ./bin/kafka-topics.sh
+COPY --from=native /home/nonroot/kafka-topics ./bin/kafka-topics.sh
 
 ENTRYPOINT [ "/usr/local/bin/kafka-topics.sh" ]
