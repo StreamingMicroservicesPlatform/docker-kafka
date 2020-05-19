@@ -17,7 +17,6 @@ COPY --from=extralibs /*.jar /opt/kafka/libs/extensions/
 
 # docker run --rm --entrypoint ls solsson/kafka -l /opt/kafka/libs/ | grep log
 COPY --from=nonlibs /empty.jar /opt/kafka/libs/slf4j-log4j12-1.7.30.jar
-COPY --from=nonlibs /empty.jar /opt/kafka/libs/log4j-1.2.17.jar
 
 COPY configs/kafka-topics /home/nonroot/native-config
 
