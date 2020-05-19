@@ -27,7 +27,8 @@ RUN native-image \
   -H:IncludeResourceBundles=joptsimple.HelpFormatterMessages \
   -H:IncludeResourceBundles=joptsimple.ExceptionMessages \
   -H:ConfigurationFileDirectories=/home/nonroot/native-config \
-  # Added because of "Invoke with MethodHandle argument ..."
+  # When testing the build for a new version we should remove this one, but then it tends to come back
+  --allow-incomplete-classpath \
   --report-unsupported-elements-at-runtime \
   # -D options from entrypoint
   -Djava.awt.headless=true \
