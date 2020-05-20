@@ -103,9 +103,8 @@ entrypoint_gen ./bin/kafka-leader-election.sh
     mainclass=$(echo $cli | cut -d: -f2)
     nativename=$(imagename $command)
     echo "Buildig admin CLI $command $mainclass ..."
-    docker build -t solsson/kafka:native-$command -t "$nativename" \
-      --build-arg command=$command --build-arg mainclass=$mainclass \
-      -f native/admincmd.Dockerfile native/
+    cat native/admincmd.Dockerfile | sed "s|{{command}}|$command|g" | sed "s|{{mainclass}}|$mainclass|g" | \
+      docker build -t solsson/kafka:native-$command -t "$nativename" -f - native/
     PUSH="$PUSH $nativename"
   done
   for nativebuild in \
