@@ -24,7 +24,7 @@ ARG graalvm_build=
 
 RUN set -ex; \
   cd /opt; \
-  curl -sLS -o graalvm.tar.gz https://github.com/${graalvm_releases}/releases/download/${graalvm_version}${graalvm_build}/graalvm-ce-${graalvm_variant}-linux-amd64-${graalvm_version}.tar.gz; \
+  curl -sLS -o graalvm.tar.gz https://github.com/${graalvm_releases}/releases/download/vm-${graalvm_version}${graalvm_build}/graalvm-ce-${graalvm_variant}-linux-amd64-${graalvm_version}.tar.gz; \
   tar xvzf graalvm.tar.gz; \
   mv graalvm-ce-${graalvm_variant}-${graalvm_version} graalvm; \
   rm graalvm.tar.gz
