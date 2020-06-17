@@ -22,6 +22,7 @@ COPY configs/{{command}} /home/nonroot/native-config
 
 RUN native-image \
   --no-server \
+  --install-exit-handlers \
   -H:+ReportExceptionStackTraces \
   --no-fallback \
   -H:IncludeResourceBundles=joptsimple.HelpFormatterMessages \

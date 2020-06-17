@@ -15,6 +15,7 @@ COPY configs/zookeeper-server-start /home/nonroot/native-config
 
 RUN native-image \
   --no-server \
+  --install-exit-handlers \
   -H:+ReportExceptionStackTraces \
   --no-fallback \
   -H:ConfigurationFileDirectories=/home/nonroot/native-config \
