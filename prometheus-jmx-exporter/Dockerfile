@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.4_11-slim@sha256:79f43f49f505df27528a3dce52e30339116ed6716b1f658206ba76caca26c85b
+FROM adoptopenjdk/openjdk11:jdk-11.0.4_11-slim@sha256:79f43f49f505df27528a3dce52e30339116ed6716b1f658206ba76caca26c85b as base
 
 ENV EXPORTER_VERSION=76cf1bf03c4cd4a050eb089f37af6a8af15abf0a
 ENV EXPORTER_REPO=github.com/prometheus/jmx_exporter
@@ -19,7 +19,12 @@ RUN set -ex; \
   mkdir ./jmx_exporter; \
   curl -SLs https://$EXPORTER_REPO/archive/$EXPORTER_VERSION.tar.gz | tar -xzf - --strip-components=1 -C ./jmx_exporter; \
   cd ./jmx_exporter; \
-  mvn package; \
+  mvn package
+
+FROM base as httpserver
+
+RUN set -ex; \
+  cd ./jmx_exporter; \
   find jmx_prometheus_httpserver/ -name *-jar-with-dependencies.jar -exec mv -v '{}' ../jmx_prometheus_httpserver.jar \;; \
   mv example_configs ../; \
   cd ..; \
@@ -34,3 +39,17 @@ COPY collect-all-slow.yml example_configs/
 
 ENTRYPOINT ["java", "-jar", "jmx_prometheus_httpserver.jar"]
 CMD ["5556", "example_configs/collect-all-slow.yml"]
+
+FROM base as javaagent
+
+RUN set -ex; \
+  cd ./jmx_exporter; \
+  find jmx_prometheus_javaagent/ -name jmx_prometheus_javaagent-*.jar -exec mv -v '{}' ../jmx_prometheus_javaagent.jar \;; \
+  mv example_configs ../; \
+  cd ..; \
+  \
+  rm -Rf ./jmx_exporter ./maven /root/.m2; \
+  \
+  apt-get purge -y --auto-remove $buildDeps; \
+  rm -rf /var/lib/apt/lists/*; \
+  rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
