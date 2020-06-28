@@ -30,7 +30,7 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt
 
-FROM adoptopenjdk:11.0.7_10-jdk-hotspot-bionic@sha256:05df284aea654234eb1de8d8346a0079c33ab03adda1262f92971c39388e99e8
+FROM adoptopenjdk:11.0.7_10-jre-hotspot-bionic@sha256:a119e89693cfca250cecc3756c5efb5fdf523d93d813003b3c2a1d29d8884211
 
 COPY --from=build /opt/cmak /opt/cmak
 
