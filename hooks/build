@@ -37,6 +37,10 @@ nonrootinitutils=$(imagename initutils-nonroot)
 docker build -t solsson/kafka:initutils-nonroot -t "$nonrootinitutils" ./initutils-nonroot
 PUSH="$PUSH $nonrootinitutils"
 
+cmak=$(imagename cmak)
+docker build -t solsson/kafka:cmak -t "$cmak" ./cmak
+PUSH="$PUSH $cmak"
+
 # Generatoe entrypoints
 entrypoints=$(imagename entrypoints)
 docker build -t $entrypoints ./kafka-entrypoints
