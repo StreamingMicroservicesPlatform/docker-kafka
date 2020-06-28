@@ -37,3 +37,9 @@ COPY --from=build /opt/cmak /opt/cmak
 WORKDIR /opt/cmak
 
 ENTRYPOINT ["./bin/cmak"]
+
+# Should be identical to kafka-nonroot's user
+RUN echo 'nonroot:x:65532:65534:nonroot:/home/nonroot:/usr/sbin/nologin' >> /etc/passwd && \
+  mkdir -p /home/nonroot && touch /home/nonroot/.bash_history && chown -R 65532:65534 /home/nonroot
+RUN chmod g+w /opt/cmak && chgrp nogroup /opt/cmak
+USER nonroot:nogroup
