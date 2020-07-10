@@ -1,4 +1,4 @@
-FROM ubuntu:20.04@sha256:8bce67040cd0ae39e0beb55bcb976a824d9966d2ac8d2e4bf6119b45505cee64
+FROM ubuntu:20.04@sha256:c844b5fee673cd976732dda6860e09b8f2ae5b324777b6f9d25fd70a0904c2e0
 
 WORKDIR /usr/local
 COPY --from=solsson/kafka:native-kafka-topics /usr/local/bin/* /usr/local/bin/
