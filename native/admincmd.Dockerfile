@@ -7,7 +7,7 @@ FROM curlimages/curl@sha256:aa45e9d93122a3cfdf8d7de272e2798ea63733eeee6d06bd2ee4
 
 USER root
 RUN curl -sLS -o /slf4j-nop-1.7.30.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.7.30/slf4j-nop-1.7.30.jar
-RUN curl -sLS -o /quarkus-kafka-client-1.4.2.Final.jar https://repo1.maven.org/maven2/io/quarkus/quarkus-kafka-client/1.4.2.Final/quarkus-kafka-client-1.4.2.Final.jar
+RUN curl -sLS -o /quarkus-kafka-client-1.6.0.Final.jar https://repo1.maven.org/maven2/io/quarkus/quarkus-kafka-client/1.6.0.Final/quarkus-kafka-client-1.6.0.Final.jar
 
 FROM solsson/kafka:nativebase as native
 
