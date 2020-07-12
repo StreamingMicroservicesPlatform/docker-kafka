@@ -92,7 +92,7 @@ function entrypoint_gen {
 }
 
 entrypoint_gen ./bin/kafka-server-start.sh /etc/kafka/server.properties
-JMXDISABLE=true entrypoint_gen ./bin/zookeeper-server-start.sh /etc/kafka/zookeeper.properties
+entrypoint_gen ./bin/zookeeper-server-start.sh /etc/kafka/zookeeper.properties
 entrypoint_gen ./bin/kafka-configs.sh
 entrypoint_gen ./bin/kafka-topics.sh
 entrypoint_gen ./bin/kafka-consumer-groups.sh
