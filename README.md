@@ -65,3 +65,27 @@ We've kept the repository name to avoid breaking the automated build of solsson/
 
 For legacy Dockerfiles from this repo (if you navigated to here from a Docker Hub [solsson](https://hub.docker.com/u/solsson/) image),
 see https://github.com/solsson/dockerfiles/tree/misc-dockerfiles.
+
+## Native builds
+
+Very experimental.
+
+```
+NOPUSH=true IMAGE_NAME=solsson/kafka:nativeagent ./hooks/build
+docker-compose -f native/docker-compose.yml down
+docker run --rm --entrypoint chown -v $(pwd)/native/configs:/configs busybox -R $(id -u) /configs
+NOPUSH=true IMAGE_NAME=solsson/kafka:native ./hooks/build
+```
+
+To test the native images reuse the usecases script:
+
+```
+for build in kafka-topics kafka-configs kafka-consumer-groups zookeeper-server-start; do
+  docker tag solsson/kafka:native-$build solsson/kafka:nativeagent-$build
+done
+./native/native-usecases.sh
+docker-compose -f native/docker-compose.yml down
+git restore --source=HEAD --staged --worktree -- native/configs/
+# The cli image should simply combine the supported commands
+docker run --rm --entrypoint sh solsson/kafka:native-cli -c 'ls ./bin/'
+```

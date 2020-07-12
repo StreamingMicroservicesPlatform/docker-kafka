@@ -5,6 +5,13 @@ set -e
 PUSH=""
 
 [ -z "$IMAGE_NAME" ] && echo "IMAGE_NAME is required" && exit 1;
+
+# Nativeagent is a prerequisite of native, but meant to run locally with result json and Dockerfiles commited
+# NOPUSH=true IMAGE_NAME=solsson/kafka:nativeagentagent ./hooks/build
+[ -z "$NATIVEAGENT" ] && echo $IMAGE_NAME | grep 'nativeagent$' && NATIVEAGENT=true
+# Docker Hub builds with tags ending with "native"
+[ -z "$NATIVE" ] && echo $IMAGE_NAME | grep 'native$' && NATIVE=true
+
 function imagename {
   buildname=$1
   case $IMAGE_NAME in
@@ -21,13 +28,16 @@ PUSH="$PUSH $jre"
 docker build -t solsson/kafka -t "$IMAGE_NAME" ./kafka
 PUSH="$PUSH $IMAGE_NAME"
 
+nonroot=$(imagename nonroot)
+docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot
+PUSH="$PUSH $nonroot"
+
 graalvm=$(imagename graalvm)
 docker build -t solsson/kafka:graalvm -t "$graalvm" ./jdk-adoptopenjdk-graalvm
 PUSH="$PUSH $graalvm"
 
-nonroot=$(imagename nonroot)
-docker build -t solsson/kafka:nonroot -t "$nonroot" ./kafka-nonroot
-PUSH="$PUSH $nonroot"
+nativeagent=$(imagename nativebase)
+docker build -t solsson/kafka:nativebase -t "$nativeagent" ./native
 
 initutils=$(imagename initutils)
 docker build -t solsson/kafka:initutils -t "$initutils" ./initutils
@@ -44,6 +54,10 @@ PUSH="$PUSH $cmak"
 # Generatoe entrypoints
 entrypoints=$(imagename entrypoints)
 docker build -t $entrypoints ./kafka-entrypoints
+
+[ "$NATIVEAGENT" = "true" ] && {
+  mkdir -p ./native/kafka-entrypoints
+}
 
 function entrypoint_gen {
   echo "# $@"
@@ -66,6 +80,15 @@ function entrypoint_gen {
   echo '"]'                >> $dfile
   docker build -t $image -f $dfile ./kafka-entrypoints
   PUSH="$PUSH $image"
+
+  [ "$NATIVEAGENT" != "true" ] || {
+    cp $dfile native/$dfile
+    sed -i "s|FROM .*|FROM $nativeagent|" native/$dfile
+    sed -i 's|  , "-cp" \\|  , "-agentpath:/opt/graalvm/lib/libnative-image-agent.so=config-merge-dir=/home/nonroot/native-config" \\\
+  , "-cp" \\|' native/$dfile
+    docker build -t $image -f native/$dfile ./native
+  }
+
 }
 
 entrypoint_gen ./bin/kafka-server-start.sh /etc/kafka/server.properties
@@ -76,7 +99,37 @@ entrypoint_gen ./bin/kafka-consumer-groups.sh
 entrypoint_gen ./bin/kafka-reassign-partitions.sh
 entrypoint_gen ./bin/kafka-leader-election.sh
 
-# Entrypoints done
+# Entrypoints done, run native build stuff
+
+[ "$NATIVEAGENT" != "true" ] || {
+  ./native/native-usecases.sh
+}
+
+[ "$NATIVE" != "true" ] || {
+  # Don't push anything else with native builds because those images would also get a "native" tag
+  PUSH=""
+  for cli in \
+      kafka-topics:kafka.admin.TopicCommand \
+      kafka-configs:kafka.admin.ConfigCommand \
+      kafka-consumer-groups:kafka.admin.ConsumerGroupCommand; do
+    command=$(echo $cli | cut -d: -f1)
+    mainclass=$(echo $cli | cut -d: -f2)
+    nativename=$(imagename $command)
+    echo "Buildig admin CLI $command $mainclass ..."
+    cat native/admincmd.Dockerfile | sed "s|{{command}}|$command|g" | sed "s|{{mainclass}}|$mainclass|g" | \
+      docker build -t solsson/kafka:native-$command -t "$nativename" -f - native/
+    PUSH="$PUSH $nativename"
+  done
+  for nativebuild in \
+      zookeeper-server-start \
+      cli; do
+    nativename=$(imagename $nativebuild)
+    docker build -t solsson/kafka:native-$nativebuild -t "$nativename" -f native/$nativebuild.Dockerfile native/
+    PUSH="$PUSH $nativename"
+  done
+}
+
+# Push results
 
 echo "PUSH list contains: $PUSH"
 [ -z "$NOPUSH" ] || exit 0

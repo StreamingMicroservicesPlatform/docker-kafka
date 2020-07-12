@@ -1,0 +1,11 @@
+[
+  {
+    "name": "org.apache.log4j.helpers.Loader"
+  },
+  {
+    "name": "sun.security.provider.ConfigFile",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ]
+  }
+]

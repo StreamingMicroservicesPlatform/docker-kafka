@@ -1,0 +1,159 @@
+    version: '2.1'
+    services:
+
+      chgrp:
+        image: busybox
+        entrypoint:
+        - chgrp
+        command:
+        - -R
+        - "65534"
+        - /configs
+        volumes:
+        - ./configs:/configs
+
+      zoo-0:
+        image: solsson/kafka:nativeagent-zookeeper-server-start
+        depends_on:
+        - chgrp
+        command:
+        - /etc/kafka/zookeeper.properties.zoo-0
+        volumes:
+        - ./native-usecases.sh.configs:/etc/kafka
+        - ./native-usecases.sh.configs/myid.zoo-0:/home/nonroot/myid
+
+      zoo-1:
+        image: solsson/kafka:nativeagent-zookeeper-server-start
+        depends_on:
+        - zoo-0
+        command:
+        - /etc/kafka/zookeeper.properties.zoo-1
+        volumes:
+        - ./configs/zookeeper-server-start:/home/nonroot/native-config
+        - ./native-usecases.sh.configs:/etc/kafka
+        - ./native-usecases.sh.configs/myid.zoo-1:/home/nonroot/myid
+
+      zoo-2:
+        image: solsson/kafka:nativeagent-zookeeper-server-start
+        depends_on:
+        - zoo-1
+        command:
+        - /etc/kafka/zookeeper.properties.zoo-2
+        volumes:
+        - ./native-usecases.sh.configs:/etc/kafka
+        - ./native-usecases.sh.configs/myid.zoo-2:/home/nonroot/myid
+
+      kafka-0:
+        image: solsson/kafka:nativeagent-kafka-server-start
+        depends_on:
+        - zoo-2
+        volumes:
+        - ./configs/kafka-server-start:/home/nonroot/native-config
+        command:
+        - /etc/kafka/server.properties
+        - --override
+        -   zookeeper.connect=zoo-1:2181
+        - --override
+        -   advertised.listeners=PLAINTEXT://kafka-0:9092
+        - --override
+        -   auto.create.topics.enable=false
+
+      kafka-1:
+        image: solsson/kafka:nativeagent-kafka-server-start
+        depends_on:
+        - kafka-0
+        command:
+        - /etc/kafka/server.properties
+        - --override
+        -   broker.id=1
+        - --override
+        -   zookeeper.connect=zoo-2:2181
+        - --override
+        -   advertised.listeners=PLAINTEXT://kafka-1:9092
+        - --override
+        -   auto.create.topics.enable=false
+
+      step1:
+        image: solsson/kafka:nativeagent-kafka-topics
+        volumes: [             ./configs/kafka-topics:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --create
+        - --topic=topic1
+        - --config
+        -   compression.type=uncompressed
+
+      step2:
+        image: solsson/kafka:nativeagent-kafka-topics
+        volumes: [             ./configs/kafka-topics:/home/nonroot/native-config ]
+        command:
+        - --zookeeper=zoo-0:2181
+        - --create
+        - --topic=topic1
+        - --partitions=1
+        - --replication-factor=1
+        - --config
+        -   compression.type=uncompressed
+        - --if-not-exists
+
+      step3:
+        image: solsson/kafka:nativeagent-kafka-topics
+        volumes: [             ./configs/kafka-topics:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --list
+
+      step4:
+        image: solsson/kafka:nativeagent-kafka-configs
+        volumes: [             ./configs/kafka-configs:/home/nonroot/native-config ]
+        command:
+        - --zookeeper=zoo-0:2181
+        - --entity-type=topics
+        - --entity-name=topic1
+        - --alter
+        -   --add-config
+        -     retention.ms=-1
+
+      step5:
+        image: solsson/kafka:nativeagent-kafka-configs
+        volumes: [             ./configs/kafka-configs:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --entity-type=brokers
+        - --entity-name=0
+        - --alter
+        -   --add-config
+        -     min.insync.replicas=1
+
+      step6:
+        image: solsson/kafka:nativeagent-kafka-consumer-groups
+        volumes: [             ./configs/kafka-consumer-groups:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --group=testgroup
+        - --topic=topic1
+        - --reset-offsets
+        - --execute
+        - --to-latest
+
+      step7:
+        image: solsson/kafka:nativeagent-kafka-consumer-groups
+        volumes: [             ./configs/kafka-consumer-groups:/home/nonroot/native-config ]
+        command:
+        - --bootstrap-server=kafka-0:9092
+        - --group=testgroup
+        - --describe
+
+      kafkacat:
+        image: edenhill/kafkacat:1.5.0
+        depends_on:
+        - kafka-0
+        environment:
+        - b=kafka-0:9092
+        - t=topic1
+        entrypoint:
+        - /bin/sh
+        - -c
+        command:
+        - |
+          while true; do sleep 1 && kafkacat -b $$b -L -t $$t | grep 'partition '; done

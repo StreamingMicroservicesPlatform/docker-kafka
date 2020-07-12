@@ -1,0 +1,17 @@
+4lw.commands.whitelist=ruok
+dataDir=/home/nonroot
+dataLogDir=/home/nonroot/log
+# https://zookeeper.apache.org/doc/r3.5.5/zookeeperAdmin.html#sc_zkMulitServerSetup
+tickTime=2000
+clientPort=2181
+initLimit=5
+syncLimit=2
+# disable the per-ip limit on the number of connections since this is a non-production config
+maxClientCnxns=0
+# Disable the adminserver by default to avoid port conflicts.
+# Set the port to something non-conflicting if choosing to enable this
+admin.enableServer=false
+# The following must be partially edited by the init-config script
+server.1=zoo-0:2888:3888:participant
+server.2=0.0.0.0:2888:3888:participant
+server.3=zoo-2:2888:3888:participant

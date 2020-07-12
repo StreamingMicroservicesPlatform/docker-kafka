@@ -1,0 +1,62 @@
+[
+{
+  "name":"java.lang.Runtime",
+  "methods":[{"name":"version","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Runtime$Version",
+  "methods":[{"name":"major","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.String"
+},
+{
+  "name":"java.lang.Thread",
+  "methods":[{"name":"getContextClassLoader","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.ThreadLocal",
+  "methods":[{"name":"remove","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.log4j.Appender"
+},
+{
+  "name":"org.apache.log4j.ConsoleAppender",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.log4j.Layout"
+},
+{
+  "name":"org.apache.log4j.Level"
+},
+{
+  "name":"org.apache.log4j.LogManager"
+},
+{
+  "name":"org.apache.log4j.Logger",
+  "methods":[{"name":"getRootLogger","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.log4j.PatternLayout",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.log4j.Priority"
+},
+{
+  "name":"org.apache.log4j.spi.LoggerRepository"
+},
+{
+  "name":"org.apache.log4j.spi.OptionHandler"
+},
+{
+  "name":"org.apache.zookeeper.server.NIOServerCnxnFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.ConfigFile",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]

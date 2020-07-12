@@ -1,0 +1,14 @@
+[
+  {
+    "name": "org.apache.log4j.helpers.Loader"
+  },
+  {
+    "name": "io.netty.util.internal.logging.Log4J2Logger"
+  },
+  {
+    "name": "sun.security.provider.ConfigFile",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ]
+  }
+]
