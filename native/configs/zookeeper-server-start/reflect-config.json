@@ -22,19 +22,8 @@
   "name":"org.apache.log4j.Appender"
 },
 {
-  "name":"org.apache.log4j.Category",
-  "methods":[{"name":"getName","parameterTypes":[] }]
-},
-{
-  "name":"org.apache.log4j.CategoryKey"
-},
-{
   "name":"org.apache.log4j.ConsoleAppender",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"org.apache.log4j.Hierarchy",
-  "methods":[{"name":"getCurrentLoggers","parameterTypes":[] }]
 },
 {
   "name":"org.apache.log4j.Layout"
@@ -43,8 +32,7 @@
   "name":"org.apache.log4j.Level"
 },
 {
-  "name":"org.apache.log4j.LogManager",
-  "methods":[{"name":"getLoggerRepository","parameterTypes":[] }]
+  "name":"org.apache.log4j.LogManager"
 },
 {
   "name":"org.apache.log4j.Logger",
@@ -56,23 +44,6 @@
 },
 {
   "name":"org.apache.log4j.Priority"
-},
-{
-  "name":"org.apache.log4j.jmx.AppenderDynamicMBean",
-  "allPublicConstructors":true
-},
-{
-  "name":"org.apache.log4j.jmx.HierarchyDynamicMBean",
-  "allPublicConstructors":true,
-  "methods":[{"name":"addLoggerMBean","parameterTypes":["java.lang.String"] }]
-},
-{
-  "name":"org.apache.log4j.jmx.LayoutDynamicMBean",
-  "allPublicConstructors":true
-},
-{
-  "name":"org.apache.log4j.jmx.LoggerDynamicMBean",
-  "allPublicConstructors":true
 },
 {
   "name":"org.apache.log4j.spi.LoggerRepository"

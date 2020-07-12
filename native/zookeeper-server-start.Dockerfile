@@ -1,7 +1,15 @@
+FROM curlimages/curl@sha256:aa45e9d93122a3cfdf8d7de272e2798ea63733eeee6d06bd2ee4f2f8c4027d7c \
+  as extralibs
+
+USER root
+RUN curl -sLS -o /slf4j-simple-1.7.30.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar
+RUN curl -sLS -o /log4j-over-slf4j-1.7.30.jar https://repo1.maven.org/maven2/org/slf4j/log4j-over-slf4j/1.7.30/log4j-over-slf4j-1.7.30.jar
+
 FROM solsson/kafka:nativebase as native
 
-# TODO extract from entrypoint
-ARG classpath=/opt/kafka/libs/slf4j-log4j12-1.7.30.jar:/opt/kafka/libs/log4j-1.2.17.jar:/opt/kafka/libs/slf4j-api-1.7.30.jar:/opt/kafka/libs/zookeeper-3.5.7.jar:/opt/kafka/libs/zookeeper-jute-3.5.7.jar
+#ARG classpath=/opt/kafka/libs/slf4j-log4j12-1.7.30.jar:/opt/kafka/libs/log4j-1.2.17.jar:/opt/kafka/libs/slf4j-api-1.7.30.jar:/opt/kafka/libs/zookeeper-3.5.7.jar:/opt/kafka/libs/zookeeper-jute-3.5.7.jar
+COPY --from=extralibs /*.jar /opt/kafka/libs/extensions/
+ARG classpath=/opt/kafka/libs/slf4j-api-1.7.30.jar:/opt/kafka/libs/extensions/slf4j-simple-1.7.30.jar:/opt/kafka/libs/extensions/log4j-over-slf4j-1.7.30.jar:/opt/kafka/libs/zookeeper-3.5.7.jar:/opt/kafka/libs/zookeeper-jute-3.5.7.jar
 
 COPY configs/zookeeper-server-start /home/nonroot/native-config
 
@@ -26,7 +34,7 @@ RUN native-image \
   # -D options from entrypoint
   -Djava.awt.headless=true \
   -Dkafka.logs.dir=/opt/kafka/bin/../logs \
-  -Dlog4j.configuration=file:/etc/kafka/log4j.properties \
+  # -Dlog4j.configuration=file:/etc/kafka/log4j.properties \
   -cp ${classpath} \
   -H:Name=zookeeper-server-start \
   org.apache.zookeeper.server.quorum.QuorumPeerMain \
