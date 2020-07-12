@@ -1,4 +1,4 @@
-FROM solsson/kafka:nativebase
+FROM solsson/kafka:nativebase as native
 
 # TODO extract from entrypoint
 ARG classpath=/opt/kafka/libs/slf4j-log4j12-1.7.30.jar:/opt/kafka/libs/log4j-1.2.17.jar:/opt/kafka/libs/slf4j-api-1.7.30.jar:/opt/kafka/libs/zookeeper-3.5.7.jar:/opt/kafka/libs/zookeeper-jute-3.5.7.jar
