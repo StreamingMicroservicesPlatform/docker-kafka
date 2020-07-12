@@ -34,19 +34,19 @@ RUN native-image \
 
 FROM gcr.io/distroless/base-debian10:nonroot@sha256:56da492c4800196c29f3e9fac3c0e66af146bfd31694f29f0958d6d568139dd9
 
-COPY --from=0 \
+COPY --from=native \
   /lib/x86_64-linux-gnu/libz.so.* \
   /lib/x86_64-linux-gnu/
 
-COPY --from=0 \
+COPY --from=native \
   /usr/lib/x86_64-linux-gnu/libzstd.so.* \
   /usr/lib/x86_64-linux-gnu/libsnappy.so.* \
   /usr/lib/x86_64-linux-gnu/liblz4.so.* \
   /usr/lib/x86_64-linux-gnu/
 
 WORKDIR /usr/local
-COPY --from=0 /home/nonroot/zookeeper-server-start ./bin/zookeeper-server-start.sh
-COPY --from=0 /etc/kafka /etc/kafka
+COPY --from=native /home/nonroot/zookeeper-server-start ./bin/zookeeper-server-start.sh
+COPY --from=native /etc/kafka /etc/kafka
 
 ENTRYPOINT [ "/usr/local/bin/zookeeper-server-start.sh" ]
 CMD ["/etc/kafka/zookeeper.properties"]
