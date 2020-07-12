@@ -76,10 +76,11 @@ function entrypoint_gen {
   , "-cp" \\|' native/$dfile
     docker build -t $image -f native/$dfile ./native
   }
+
 }
 
 entrypoint_gen ./bin/kafka-server-start.sh /etc/kafka/server.properties
-entrypoint_gen ./bin/zookeeper-server-start.sh /etc/kafka/zookeeper.properties
+JMXDISABLE=true entrypoint_gen ./bin/zookeeper-server-start.sh /etc/kafka/zookeeper.properties
 entrypoint_gen ./bin/kafka-configs.sh
 entrypoint_gen ./bin/kafka-topics.sh
 entrypoint_gen ./bin/kafka-consumer-groups.sh
